@@ -1,0 +1,94 @@
+.header {
+  height: 72px;
+  padding: 0 2rem;
+  background: var(--color-header-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-subtle);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  width: 320px;
+  transition: var(--transition);
+}
+
+.searchWrapper:focus-within {
+  background: var(--color-bg);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.searchIcon {
+  font-size: 0.875rem;
+  color: var(--color-text-dim);
+  margin-right: 0.75rem;
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  width: 100%;
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.themeToggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.themeToggle:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: rotate(12deg);
+}
+
+.notification {
+  font-size: 1.25rem;
+  cursor: pointer;
+  position: relative;
+  padding: 0.25rem;
+  color: var(--color-text-muted);
+}
+
+.notification::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background: var(--color-error);
+  border-radius: 50%;
+  border: 2px solid var(--color-bg);
+}
