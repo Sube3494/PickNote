@@ -7,7 +7,7 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.welcome}>
-        <span>PickNote 资产档案同步中...</span>
+        <span>PickNote 数据实时同步中...</span>
       </div>
     </header>
   );

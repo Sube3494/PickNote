@@ -145,8 +145,14 @@
   border-radius: 14px;
   box-shadow: var(--shadow-lg);
   z-index: 100;
-  max-height: 250px;
+  max-height: 300px;
   overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.dropdownMenu::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 .dropdownOption {

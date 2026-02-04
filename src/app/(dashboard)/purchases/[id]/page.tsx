@@ -75,7 +75,7 @@ export default function PurchaseDetailPage({ params }: { params: Promise<{ id: s
     }
   };
 
-  if (loading) return <div style={{ padding: '4rem', textAlign: 'center' }}>档案资料调取中...</div>;
+  if (loading) return <div style={{ padding: '4rem', textAlign: 'center' }}>数据加载中...</div>;
   if (!purchase) return null;
 
   return (

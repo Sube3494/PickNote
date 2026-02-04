@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db';
 
 export async function GET() {
   try {
-    const [productCount, supplierCount, purchaseCount] = await Promise.all([
+    const [productCount, supplierCount, purchaseCount, recentProducts, recentPurchases] = await Promise.all([
       prisma.product.count(),
       prisma.supplier.count(),
       prisma.purchase.count({
@@ -12,11 +12,31 @@ export async function GET() {
             gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
           }
         }
+      }),
+      prisma.product.findMany({
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          name: true,
+          code: true,
+          category: true,
+          currentStock: true,
+          images: true
+        }
+      }),
+      prisma.purchase.findMany({
+        take: 3,
+        orderBy: { purchaseDate: 'desc' },
+        include: {
+          supplier: {
+            select: { name: true }
+          }
+        }
       })
     ]);
 
     // 计算总货值: 每个货品的当前库存 * 该货品在进货明细中的最新单价
-    // 注意：这是一个简化的库存估算逻辑
     const products = await prisma.product.findMany({
       select: {
         id: true,
@@ -41,6 +61,8 @@ export async function GET() {
         supplierCount,
         purchaseCount,
         totalStockValue,
+        recentProducts,
+        recentPurchases
       }
     });
   } catch (error) {

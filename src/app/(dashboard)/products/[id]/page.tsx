@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useToast } from '@/components/ToastContext';
-import ImageModal from '@/components/ImageModal';
-import Modal from '@/components/Modal';
+import CategorySelector from '@/components/CategorySelector';
 import styles from './page.module.css';
 
 interface Product {
@@ -14,7 +13,7 @@ interface Product {
   code: string;
   name: string;
   category: string;
-  spec?: string;
+  categoryId?: string | null;
   remark?: string;
   images: string[];
   currentStock: number;
@@ -46,45 +45,43 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [categories, setCategories] = useState<string[]>([]);
   const [editForm, setEditForm] = useState({
     code: '',
     name: '',
     category: '',
-    spec: '',
+    categoryId: null as string | null,
     remark: '',
     channel: '',
     minOrderQty: 0,
+    currentStock: 0,
     images: [] as string[],
   });
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [suppliers, setSuppliers] = useState<Array<{id: string; name: string; type: string; contactName?: string}>>([]);
+  const [isSupplierOpen, setIsSupplierOpen] = useState(false);
   const [zoomPos, setZoomPos] = useState({ lensLeft: 0, lensTop: 0, bgX: 0, bgY: 0, show: false });
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const supplierRef = useRef<HTMLDivElement>(null);
   const mainImageRef = useRef<HTMLDivElement>(null);
 
   // 点击外部关闭下拉菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
+      if (supplierRef.current && !supplierRef.current.contains(event.target as Node)) {
+        setIsSupplierOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 获取分类列表
+  // 加载供应商列表
   useEffect(() => {
-    fetch('/api/categories')
+    fetch('/api/suppliers')
       .then(res => res.json())
       .then(result => {
         if (result.success) {
-          const cats = result.data?.map((cat: { name: string }) => cat.name) || [];
-          setCategories(cats);
+          setSuppliers(result.data || []);
         }
-      })
-      .catch(console.error);
+      });
   }, []);
 
   useEffect(() => {
@@ -115,10 +112,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             code: productData.code,
             name: productData.name,
             category: productData.category,
-            spec: productData.spec || '',
+            categoryId: productData.categoryId || null,
             remark: productData.remark || '',
             channel: productData.channel || '',
             minOrderQty: productData.minOrderQty,
+            currentStock: productData.currentStock,
             images: productData.images,
           });
         } else {
@@ -140,10 +138,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         code: product.code,
         name: product.name,
         category: product.category,
-        spec: product.spec || '',
+        categoryId: product.categoryId || null,
         remark: product.remark || '',
         channel: product.channel || '',
         minOrderQty: product.minOrderQty,
+        currentStock: product.currentStock,
         images: product.images,
       });
     }
@@ -161,7 +160,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       if (data.success) {
         setProduct(data.data);
         setIsEditing(false);
-        setIsDropdownOpen(false);
+        setIsSupplierOpen(false);
         showToast('保存成功', 'success');
       } else {
         showToast(data.message || '保存失败', 'error');
@@ -334,7 +333,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
       </header>
 
       <div className={styles.container}>
-        {/* Gallery Section */}
+        <div className={styles.productCard}>
+          {/* Gallery Section */}
         <div className={styles.imageSection}>
           <div className={styles.galleryContainer} style={{ width: 400, height: 400 }}>
             <div 
@@ -348,20 +348,24 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 <>
                   {/* 过渡中显示前一张图片（滑出） */}
                   {isTransitioning && (
-                    <img 
+                    <Image 
                       className={`${styles.mainImageDisplay} ${styles.imageSlideOut}`}
                       data-direction={slideDirection}
                       src={(isEditing ? editForm.images : product.images)[previousImage]} 
                       alt={product.name}
+                      fill
+                      unoptimized
                     />
                   )}
                   {/* 当前图片（滑入） */}
-                  <img 
+                  <Image 
                     className={`${styles.mainImageDisplay} ${isTransitioning ? styles.imageSlideIn : ''}`}
                     data-direction={isTransitioning ? slideDirection : undefined}
                     src={(isEditing ? editForm.images : product.images)[activeImage]} 
                     alt={product.name} 
                     onClick={() => !isEditing && setShowModal(true)}
+                    fill
+                    unoptimized
                   />
                   {!isEditing && zoomPos.show && (
                     <div 
@@ -430,9 +434,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
               </label>
             )}
           </div>
-        </div>
+          </div>
 
-        <div className={styles.detailsSection}>
+          <div className={styles.detailsSection}>
           <div className={styles.detailsCard}>
             {/* Embedded Title Section */}
             <div className={styles.titleSection}>
@@ -445,108 +449,154 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     onChange={e => setEditForm({...editForm, name: e.target.value})} 
                     placeholder="请输入货品完整名称"
                   />
+                   <div className={styles.headerMeta}>
+                      <div className={styles.infoField}>
+                        <span className={styles.infoLabel}>货品编码</span>
+                        <input className={styles.infoInput} value={editForm.code} onChange={e => setEditForm({...editForm, code: e.target.value})} />
+                      </div>
+                      <div className={styles.infoField}>
+                        <span className={styles.infoLabel}>分类</span>
+                        <CategorySelector 
+                          value={editForm.categoryId || undefined}
+                          onChange={(categoryId, categoryPath) => {
+                            setEditForm({
+                              ...editForm, 
+                              categoryId,
+                              category: categoryPath || ''
+                            });
+                          }}
+                        />
+                      </div>
+                   </div>
                 </div>
               ) : (
-                <h1 className={styles.pageTitle}>{product.name}</h1>
+                <>
+                  <h1 className={styles.pageTitle}>{product.name}</h1>
+                  <div className={styles.headerMeta}>
+                    <div className={styles.metaBadge}>
+                      <span className={styles.infoLabel}>编码</span>
+                      {product.code}
+                    </div>
+                    <div className={styles.metaBadge}>
+                      <span className={styles.infoLabel}>分类</span>
+                      {product.category}
+                    </div>
+                  </div>
+                </>
               )}
             </div>
 
-            <div className={styles.divider}></div>
-            {/* Main Info Section */}
-            <div className={styles.mainInfoSection}>
-               {/* Basic Info Group */}
-               <div className={styles.infoGroup}>
-                 <div className={styles.groupHeader}>
-                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                   基础资料
-                 </div>
-                 <div className={styles.groupContent}>
-                    <div className={styles.infoField}>
-                      <span className={styles.infoLabel}>货品编码</span>
-                      {isEditing ? (
-                        <input className={styles.infoInput} value={editForm.code} onChange={e => setEditForm({...editForm, code: e.target.value})} />
-                      ) : <span className={styles.infoValue}>{product.code}</span>}
-                    </div>
-                    <div className={styles.infoField}>
-                      <span className={styles.infoLabel}>所属分类</span>
-                      {isEditing ? (
-                        <div className={styles.selectWrapper} ref={dropdownRef}>
-                          <div className={styles.infoInput} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>{editForm.category}</div>
-                          {isDropdownOpen && (
-                            <div className={styles.dropdownMenu}>
-                              {categories.map(cat => <div key={cat} onClick={() => { setEditForm({...editForm, category: cat}); setIsDropdownOpen(false); }} className={styles.dropdownOption}>{cat}</div>)}
-                            </div>
-                          )}
-                        </div>
-                      ) : <div style={{marginTop: '0.25rem'}}><span className={styles.badge}>{product.category}</span></div>}
-                    </div>
+            {/* Stats Card */}
+              <div className={styles.statsCard}>
+               <div className={styles.statItem}>
+                 <span className={styles.statLabel}>
+                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                   当前库存
+                 </span>
+                 <div className={styles.stockEmphasis}>
+                   <span className={`${styles.infoValue} ${product.currentStock <= 5 ? styles.lowStock : ''} ${isEditing ? styles.hidden : ''}`}>
+                     {product.currentStock}
+                   </span>
+                   {isEditing && (
+                      <input 
+                        type="number" 
+                        className={styles.transparentInput} 
+                        style={{fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-primary)', width: '80px', textAlign: 'left'}} 
+                        value={editForm.currentStock} 
+                        onChange={e => setEditForm({...editForm, currentStock: parseInt(e.target.value) || 0})} 
+                      />
+                   )}
+                   <span className={styles.unit}>件</span>
                  </div>
                </div>
+               
+               <div style={{width: '1px', height: '40px', background: 'var(--color-border-subtle)'}}></div>
 
-               {/* Metrics Group */}
-               <div className={styles.infoGroup}>
-                 <div className={styles.groupHeader}>
-                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-                   关键经营指标
+               <div className={styles.statItem}>
+                 <span className={styles.statLabel}>起订要求</span>
+                 <div style={{display: 'flex', alignItems: 'baseline', gap: '4px'}}>
+                   {isEditing ? (
+                      <input 
+                        type="number" 
+                        className={styles.transparentInput} 
+                        style={{fontSize: '1.25rem', fontWeight: 600, width: '50px', textAlign: 'left'}} 
+                        value={editForm.minOrderQty} 
+                        onChange={e => setEditForm({...editForm, minOrderQty: parseInt(e.target.value) || 0})} 
+                      />
+                   ) : (
+                      <span className={styles.infoValue} style={{fontSize: '1.25rem'}}>{product.minOrderQty}</span>
+                   )}
+                   <span className={styles.unitSmall}>件起</span>
                  </div>
-                 <div className={styles.groupContent}>
-                    <div className={styles.infoField}>
-                      <span className={styles.infoLabel}>当前在库</span>
-                      <div className={styles.stockEmphasis}>
-                        <span className={`${styles.infoValue} ${product.currentStock <= 5 ? styles.lowStock : ''}`}>
-                          {product.currentStock}
-                        </span>
-                        <span className={styles.unit}>件</span>
+               </div>
+            </div>
+
+            {/* Properties Grid */}
+             <div className={styles.propertiesGrid}>
+                <div className={styles.infoField}>
+                  <span className={styles.infoLabel}>主要采销渠道</span>
+                  {isEditing ? (
+                    <div className={styles.selectWrapper} ref={supplierRef} style={{marginTop: '4px'}}>
+                      <div 
+                        className={styles.infoInput} 
+                        onClick={() => setIsSupplierOpen(!isSupplierOpen)}
+                        style={{cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}
+                      >
+                        <span>{editForm.channel || '关联供应商'}</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                       </div>
+                      {isSupplierOpen && (
+                        <div className={styles.dropdownMenu}>
+                          {suppliers.map(s => (
+                            <div 
+                              key={s.id} 
+                              onClick={() => { setEditForm({...editForm, channel: s.name}); setIsSupplierOpen(false); }} 
+                              className={styles.dropdownOption}
+                            >
+                              <div style={{flex: 1}}>
+                                <div style={{fontWeight: 600}}>{s.name}</div>
+                                <div style={{fontSize: '0.75rem', opacity: 0.6, marginTop: '2px'}}>
+                                  {s.type} {s.contactName && `· ${s.contactName}`}
+                                </div>
+                              </div>
+                              {editForm.channel === s.name && (
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                              )}
+                            </div>
+                          ))}
+                          <div className={styles.dropdownDivider}></div>
+                          <Link href="/suppliers/new" className={`${styles.dropdownOption} ${styles.addOption}`}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <line x1="12" y1="8" x2="12" y2="16"></line>
+                              <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                            <span>新增供应商</span>
+                          </Link>
+                        </div>
+                      )}
                     </div>
-                    <div className={styles.infoField}>
-                      <span className={styles.infoLabel}>起订要求</span>
-                      {isEditing ? (
-                        <input type="number" className={styles.infoInput} value={editForm.minOrderQty} onChange={e => setEditForm({...editForm, minOrderQty: parseInt(e.target.value) || 0})} />
-                      ) : <span className={styles.infoValue}>{product.minOrderQty} <span className={styles.unitSmall}>件起</span></span>}
-                    </div>
-                 </div>
-               </div>
-            </div>
+                  ) : <span className={styles.infoValue}>{product.channel || '—'}</span>}
+                </div>
+                <div className={styles.infoField}>
+                   <span className={styles.infoLabel}>最后更新</span>
+                   <span className={styles.infoValue}>{new Date(product.createdAt).toLocaleDateString()}</span>
+                </div>
+             </div>
 
-            <div className={styles.divider}></div>
-
-            {/* Supplementary Info */}
-            <div className={styles.subInfoSection}>
-               <div className={styles.infoField}>
-                 <span className={styles.infoLabel}>规格说明</span>
-                 {isEditing ? (
-                   <input className={styles.infoInput} value={editForm.spec} onChange={e => setEditForm({...editForm, spec: e.target.value})} />
-                 ) : <span className={styles.infoValue}>{product.spec || '尚未填写规格'}</span>}
-               </div>
-               <div className={styles.infoField}>
-                 <span className={styles.infoLabel}>核心采购渠道</span>
-                 {isEditing ? (
-                   <input className={styles.infoInput} value={editForm.channel} onChange={e => setEditForm({...editForm, channel: e.target.value})} />
-                 ) : <span className={styles.infoValue}>{product.channel || '未定义渠道'}</span>}
-               </div>
-               <div className={styles.infoField}>
-                  <span className={styles.infoLabel}>货品最后更新</span>
-                  <span className={styles.infoValue}>{new Date(product.createdAt).toLocaleDateString()}</span>
-               </div>
-            </div>
-
+            {/* Remark */}
             <div className={styles.remarkSection}>
-               <span className={styles.infoLabel}>备注说明</span>
+               <span className={styles.remarkLabel}>备注说明</span>
                {isEditing ? (
-                 <textarea className={styles.remarkTextarea} value={editForm.remark} onChange={e => setEditForm({...editForm, remark: e.target.value})} rows={3} />
-               ) : <div className={styles.remarkBox}>{product.remark || '无补充说明。'}</div>}
+                 <textarea className={styles.remarkTextarea} style={{marginTop: '0.5rem'}} value={editForm.remark} onChange={e => setEditForm({...editForm, remark: e.target.value})} rows={3} />
+               ) : <div className={styles.remarkBox} style={{marginTop: '0.5rem', border: 'none', background: 'transparent', padding: 0, minHeight: 'auto'}}>{product.remark || '暂无补充说明。'}</div>}
             </div>
-          </div>
-
-            <div className={styles.divider}></div>
-
-            {/* History Section */}
+            {/* History Section - Merged */}
+            <div className={styles.divider} style={{margin: '1.5rem 0'}}></div>
             <div className={styles.historySection}>
-               <div className={styles.groupHeader}>
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                 最近进货动态
-               </div>
+               <span className={styles.sectionLabel}>最近进货动态</span>
                <div className={styles.historyTableWrapper}>
                  {product.purchaseItems?.length > 0 ? (
                    <table className={styles.historyTable}>
@@ -569,13 +619,50 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
         </div>
+      </div>
+      </div>
 
       {showModal && product.images.length > 0 && <ImageModal src={product.images[activeImage]} onClose={() => setShowModal(false)} />}
-      <Modal 
-        isOpen={showAddCategoryModal} title="新增品类" placeholder="输入新品类名称..." showInput 
-        onConfirm={val => { if (val.trim()) setEditForm(prev => ({ ...prev, category: val.trim() })); setShowAddCategoryModal(false); }} 
-        onClose={() => setShowAddCategoryModal(false)} 
-      />
     </div>
   );
 }
+
+const ImageModal = ({ src, onClose }: { src: string; onClose: () => void }) => {
+  return (
+    <div 
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+        background: 'rgba(0,0,0,0.9)', zIndex: 1000,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '2rem', animation: 'fadeIn 0.2s ease'
+      }}
+      onClick={onClose}
+    >
+      <div style={{ position: 'relative', width: '90%', height: '90%', maxWidth: '1200px', maxHeight: '800px' }}>
+        <button
+          onClick={(e) => { e.stopPropagation(); onClose(); }}
+          style={{
+            position: 'absolute', top: '-3rem', right: '-3rem',
+            background: 'rgba(255,255,255,0.1)', border: 'none',
+            color: '#fff', padding: '0.75rem', borderRadius: '50%',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backdropFilter: 'blur(4px)', transition: 'all 0.2s ease',
+            zIndex: 1001
+          }}
+          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+          onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <Image 
+          src={src} 
+          alt="Preview" 
+          fill
+          style={{ objectFit: 'contain', borderRadius: '8px' }} 
+          onClick={(e) => e.stopPropagation()}
+          unoptimized
+        />
+      </div>
+    </div>
+  );
+};

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ToastContext';
 import Link from 'next/link';
@@ -20,10 +20,36 @@ export default function NewSupplierPage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const supplierTypes = [
+    { value: '1688', label: '1688 (阿里巴巴)' },
+    { value: '拼多多', label: '拼多多 (PDD)' },
+    { value: '微信', label: '微信私域 / 群聊' },
+    { value: '淘宝', label: '淘宝 / 天猫' },
+    { value: '线下', label: '线下市场 / 档口' },
+    { value: '其他', label: '其他渠道' }
+  ];
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => { // Modified type definition
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const selectType = (val: string) => {
+    setFormData(prev => ({ ...prev, type: val }));
+    setIsDropdownOpen(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,7 +68,7 @@ export default function NewSupplierPage() {
       });
       const data = await res.json();
       if (data.success) {
-        showToast('供应商档案录入成功', 'success');
+        showToast('供应商信息录入成功', 'success');
         router.push('/suppliers');
       } else {
         showToast(data.message || '录入失败', 'error');
@@ -60,9 +86,9 @@ export default function NewSupplierPage() {
         <div className={styles.titleGroup}>
           <Link href="/suppliers" className={styles.backLink}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            返回渠道列表
+            返回列表
           </Link>
-          <h1 className={styles.title}>新增供应商档案</h1>
+          <h1 className={styles.title}>新增供应商信息</h1>
           <p className={styles.subtitle}>建立完善的货源渠道库，方便之后的进货单录入与统计</p>
         </div>
       </header>
@@ -71,7 +97,7 @@ export default function NewSupplierPage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            核心档案
+            核心信息
           </h2>
           <div className={styles.grid}>
             <div className={styles.fieldFull}>
@@ -107,19 +133,35 @@ export default function NewSupplierPage() {
             </div>
             <div className={styles.field}>
               <label className={styles.label}>渠道类型</label>
-              <select 
-                name="type"
-                className={styles.select}
-                value={formData.type}
-                onChange={handleChange}
-              >
-                <option value="1688">1688 (阿里巴巴)</option>
-                <option value="拼多多">拼多多 (PDD)</option>
-                <option value="微信">微信私域 / 群聊</option>
-                <option value="淘宝">淘宝 / 天猫</option>
-                <option value="线下">线下市场 / 档口</option>
-                <option value="其他">其他渠道</option>
-              </select>
+              <div className={styles.selectWrapper} ref={dropdownRef}>
+                <div 
+                  className={`${styles.input} ${styles.selectTrigger} ${isDropdownOpen ? styles.selectTriggerOpen : ''}`}
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  <span>{supplierTypes.find(t => t.value === formData.type)?.label || '选择渠道类型'}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+                {isDropdownOpen && (
+                  <div className={styles.dropdownMenu}>
+                    {supplierTypes.map(type => (
+                      <div 
+                        key={type.value} 
+                        className={`${styles.dropdownOption} ${formData.type === type.value ? styles.dropdownOptionActive : ''}`}
+                        onClick={() => selectType(type.value)}
+                      >
+                        {type.label}
+                        {formData.type === type.value && (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             <div className={styles.field}>
               <label className={styles.label}>具体经营地址</label>
@@ -149,10 +191,10 @@ export default function NewSupplierPage() {
         </section>
 
         <div className={styles.formActions}>
-          <button type="submit" className="btn btn-primary submitBtn" disabled={isSubmitting}>
-            {isSubmitting ? '保存云端中...' : '确认录入供应商档案'}
+          <button type="submit" className={`btn btn-primary ${styles.submitBtn}`} disabled={isSubmitting}>
+            {isSubmitting ? '保存中...' : '确认并录入信息'}
           </button>
-          <Link href="/suppliers" className="btn btn-secondary cancelBtn">放弃录入</Link>
+          <Link href="/suppliers" className={`btn btn-secondary ${styles.cancelBtn}`}>取消</Link>
         </div>
       </form>
     </div>

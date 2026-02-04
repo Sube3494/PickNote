@@ -42,7 +42,7 @@ export default function SuppliersPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.titleGroup}>
-          <h1 className={styles.title}>供应链端资料管理</h1>
+          <h1 className={styles.title}>供应商信息管理</h1>
           <p className={styles.subtitle}>维护采购渠道及其联系方式，确保供应链路稳定透明</p>
         </div>
         <div className={styles.headerActions}>
@@ -71,7 +71,7 @@ export default function SuppliersPage() {
         </div>
       ) : filteredSuppliers.length === 0 ? (
         <div style={{ padding: '6rem', textAlign: 'center', color: 'var(--color-text-dim)' }}>
-           <p style={{ fontWeight: 600, fontSize: '1.125rem' }}>未匹配到该供应渠道档案</p>
+           <p style={{ fontWeight: 600, fontSize: '1.125rem' }}>未匹配到该供应商信息</p>
            <p style={{ marginTop: '0.5rem' }}>请尝试更换关键词搜寻</p>
         </div>
       ) : (
@@ -102,7 +102,7 @@ export default function SuppliersPage() {
 
               <div className={styles.cardFooter}>
                 <Link href={`/suppliers/${supplier.id}/edit`} className={styles.editBtn}>
-                  穿透并编辑档案
+                  修改供应商信息
                 </Link>
               </div>
             </div>

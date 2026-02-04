@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ToastContext';
-import Modal from '@/components/Modal';
+import CategorySelector from '@/components/CategorySelector';
 import Link from 'next/link';
 import styles from './page.module.css';
 
@@ -17,7 +17,7 @@ export default function NewProductPage() {
     code: '',
     name: '',
     category: '',
-    spec: '',
+    categoryId: null as string | null,
     remark: '',
     channel: '',
     minOrderQty: 0,
@@ -26,25 +26,26 @@ export default function NewProductPage() {
   const [images, setImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [suppliers, setSuppliers] = useState<Array<{id: string; name: string; type: string; contactName?: string}>>([]);
+  const [isSupplierOpen, setIsSupplierOpen] = useState(false);
+  
+  const supplierRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch('/api/categories')
+    // 加载供应商
+    fetch('/api/suppliers')
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setCategories(data.data.map((c: { name: string }) => c.name));
+          setSuppliers(data.data);
         }
       });
   }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
+      if (supplierRef.current && !supplierRef.current.contains(event.target as Node)) {
+        setIsSupplierOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -101,7 +102,7 @@ export default function NewProductPage() {
       });
       const data = await res.json();
       if (data.success) {
-        showToast('货品信息已成功建立', 'success');
+        showToast('货品信息已保存', 'success');
         router.push('/products');
       } else {
         showToast(data.message || '保存失败', 'error');
@@ -122,7 +123,7 @@ export default function NewProductPage() {
             返回列表
           </Link>
           <h1 className={styles.title}>新增货品信息</h1>
-          <p className={styles.subtitle}>创建一个唯一的货品编码，并记录其详细信息</p>
+          <p className={styles.subtitle}>记录货品的核心信息，关联首选采销渠道</p>
         </div>
       </header>
 
@@ -146,84 +147,81 @@ export default function NewProductPage() {
             </div>
             <div className={styles.field}>
               <label className={styles.label}>所属品类</label>
-              <div className={styles.selectWrapper} ref={dropdownRef}>
-                <div 
-                  className={`${styles.input} ${styles.selectTrigger} ${isDropdownOpen ? styles.selectTriggerOpen : ''}`}
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                >
-                  <span>{formData.category || '请选择分类'}</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </div>
-                {isDropdownOpen && (
-                  <div className={styles.dropdownMenu}>
-                    {categories.map(cat => (
-                      <div 
-                        key={cat} 
-                        className={`${styles.dropdownOption} ${formData.category === cat ? styles.dropdownOptionActive : ''}`}
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, category: cat }));
-                          setIsDropdownOpen(false);
-                        }}
-                      >
-                        {cat}
-                        {formData.category === cat && (
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                          </svg>
-                        )}
-                      </div>
-                    ))}
-                    <div className={styles.dropdownDivider}></div>
-                    <div 
-                      className={`${styles.dropdownOption} ${styles.addOption}`}
-                      onClick={() => {
-                        setShowAddCategoryModal(true);
-                        setIsDropdownOpen(false);
-                      }}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="16"></line>
-                        <line x1="8" y1="12" x2="16" y2="12"></line>
-                      </svg>
-                      <span>新增品类...</span>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <CategorySelector 
+                value={formData.categoryId || undefined}
+                onChange={(categoryId, categoryPath) => {
+                  setFormData(prev => ({ 
+                    ...prev, 
+                    categoryId,
+                    category: categoryPath || ''
+                  }));
+                }}
+              />
             </div>
             <div className={styles.fieldFull}>
               <label className={styles.label}>货品全名 *</label>
               <input 
                 name="name"
-                placeholder="详尽的名称有助于之后筛选和统计"
+                placeholder="作为识别货品的首要依据"
                 className={styles.input}
                 value={formData.name}
                 onChange={handleChange}
                 required
               />
             </div>
-            <div className={styles.field}>
-              <label className={styles.label}>规格说明</label>
-              <input 
-                name="spec"
-                placeholder="例如: 200g/盒, 10个装"
-                className={styles.input}
-                value={formData.spec}
-                onChange={handleChange}
-              />
-            </div>
-            <div className={styles.field}>
-              <label className={styles.label}>主要采销渠道</label>
-              <input 
-                name="channel"
-                placeholder="例如: 1688, 微信群..."
-                className={styles.input}
-                value={formData.channel}
-                onChange={handleChange}
-              />
+            
+            <div className={styles.fieldFull}>
+              <label className={styles.label}>主要采销渠道 (关联供应商)</label>
+              <div className={styles.selectWrapper} ref={supplierRef}>
+                <div 
+                  className={`${styles.input} ${styles.selectTrigger} ${isSupplierOpen ? styles.selectTriggerOpen : ''}`}
+                  onClick={() => setIsSupplierOpen(!isSupplierOpen)}
+                >
+                  <span>{formData.channel || '关联一个已存在的供应商'}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+                {isSupplierOpen && (
+                  <div className={styles.dropdownMenu}>
+                    {suppliers.length > 0 ? (
+                      suppliers.map(s => (
+                        <div 
+                          key={s.id} 
+                          className={`${styles.dropdownOption} ${formData.channel === s.name ? styles.dropdownOptionActive : ''}`}
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, channel: s.name }));
+                            setIsSupplierOpen(false);
+                          }}
+                        >
+                          <div>
+                            <div style={{fontWeight: 700}}>{s.name}</div>
+                            <div style={{fontSize: '0.75rem', opacity: 0.6}}>{s.type} · {s.contactName || '无记录'}</div>
+                          </div>
+                          {formData.channel === s.name && (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className={styles.dropdownOption} style={{opacity: 0.5, cursor: 'default'}}>
+                        请先录入供应商信息
+                      </div>
+                    )}
+                    <div className={styles.dropdownDivider}></div>
+                    <Link href="/suppliers/new" className={`${styles.dropdownOption} ${styles.addOption}`}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                      </svg>
+                      <span>去录入供应商...</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </section>
@@ -274,7 +272,7 @@ export default function NewProductPage() {
            <textarea 
              name="remark"
              className={styles.textarea}
-             placeholder="其他辅助记录信息..."
+             placeholder="其他辅助记录信息，如材质、保质期等..."
              value={formData.remark}
              onChange={handleChange}
            />
@@ -288,19 +286,6 @@ export default function NewProductPage() {
         </div>
       </form>
 
-      <Modal 
-        isOpen={showAddCategoryModal}
-        title="新增品类"
-        placeholder="请输入新品类名称..."
-        showInput={true}
-        onConfirm={(val) => {
-          if (val.trim()) {
-            setFormData(prev => ({ ...prev, category: val.trim() }));
-          }
-          setShowAddCategoryModal(false);
-        }}
-        onClose={() => setShowAddCategoryModal(false)}
-      />
     </div>
   );
 }

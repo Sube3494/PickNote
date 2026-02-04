@@ -10,6 +10,7 @@ interface ModalProps {
   defaultValue?: string;
   placeholder?: string;
   showInput?: boolean;
+  children?: React.ReactNode;
   confirmText?: string;
   cancelText?: string;
   type?: 'default' | 'danger';
@@ -24,6 +25,7 @@ export default function Modal({
   defaultValue = '',
   placeholder = '',
   showInput = false,
+  children,
   confirmText = '确定',
   cancelText = '取消',
   type = 'default',
@@ -73,6 +75,7 @@ export default function Modal({
               placeholder={placeholder}
             />
           )}
+          {children}
         </div>
 
         <footer className={styles.footer}>
