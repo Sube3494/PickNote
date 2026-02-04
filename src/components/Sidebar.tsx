@@ -1,3 +1,10 @@
+/*
+ * @Date: 2026-02-03 18:57:44
+ * @Author: Sube
+ * @FilePath: Sidebar.tsx
+ * @LastEditTime: 2026-02-04 19:12:35
+ * @Description: 
+ */
 'use client';
 
 import React from 'react';
@@ -33,7 +40,7 @@ const Icons = {
 
 const navItems = [
   { label: '仪表盘', href: '/', Icon: Icons.Dashboard },
-  { label: '货品档案', href: '/products', Icon: Icons.Products },
+  { label: '货品信息', href: '/products', Icon: Icons.Products },
   { label: '供应商', href: '/suppliers', Icon: Icons.Suppliers },
   { label: '进货管理', href: '/purchases', Icon: Icons.Purchases },
   { label: '品类管理', href: '/categories', Icon: Icons.Categories },

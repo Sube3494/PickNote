@@ -60,7 +60,7 @@ export default function ImportPage() {
         showToast(errorMsg, 'error');
         setMessage({ type: 'error', text: errorMsg });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: '网络请求失败，请稍后重试' });
     } finally {
       setIsUploading(false);
@@ -84,7 +84,7 @@ export default function ImportPage() {
         <div className={styles.titleGroup}>
           <Link href="/products" className={styles.backLink}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            返回货品档案
+            返回货品信息
           </Link>
           <h1 className={styles.title}>批量导入货品</h1>
           <p className={styles.subtitle}>上传 Excel 文档，系统将自动识别条码、品类及嵌入图片</p>

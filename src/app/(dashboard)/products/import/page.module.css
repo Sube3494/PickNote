@@ -19,12 +19,10 @@
   font-weight: 600;
   color: var(--color-primary);
   opacity: 0.8;
-  transition: var(--transition);
 }
 
 .backLink:hover {
   opacity: 1;
-  transform: translateX(-4px);
 }
 
 .title {

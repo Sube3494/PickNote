@@ -11,18 +11,29 @@
 
 .toast {
   pointer-events: auto;
-  min-width: 280px;
-  max-width: 450px;
-  padding: 1rem 1.25rem;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  min-width: 300px;
+  max-width: 420px;
+  padding: 0.875rem 1.25rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-premium);
   display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1), fadeOut 0.3s ease forwards 2.7s;
+  align-items: flex-start;
+  gap: 0.75rem;
+  animation: slideIn var(--duration-normal) var(--ease-spring), fadeOut 0.3s ease forwards 4.7s;
   overflow: hidden;
+  position: relative;
+}
+
+/* Accent line on left */
+.toast::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
 }
 
 .icon {
@@ -30,32 +41,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 0.125rem;
 }
 
 .message {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: 500;
   color: var(--color-text);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 /* Types */
-.success {
-  border-left: 4px solid #10b981;
+.success::before {
+  background: var(--color-success);
 }
 .success .icon {
-  color: #10b981;
+  color: var(--color-success);
 }
 
-.error {
-  border-left: 4px solid #ef4444;
+.error::before {
+  background: var(--color-error);
 }
 .error .icon {
-  color: #ef4444;
+  color: var(--color-error);
 }
 
-.info {
-  border-left: 4px solid var(--color-primary);
+.info::before {
+  background: var(--color-primary);
 }
 .info .icon {
   color: var(--color-primary);
@@ -75,6 +87,7 @@
 @keyframes fadeOut {
   to {
     opacity: 0;
-    transform: scale(0.95);
+    transform: translateY(-10px);
   }
 }
+

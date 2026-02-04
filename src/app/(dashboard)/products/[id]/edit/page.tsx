@@ -113,7 +113,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     }
   };
 
-  if (loading) return <div className={styles.loading}>正在加载档案资料...</div>;
+  if (loading) return <div className={styles.loading}>正在加载货品信息...</div>;
 
   return (
     <div className={styles.page}>
@@ -249,7 +249,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
         <div className={styles.formActions}>
           <button type="submit" className="btn btn-primary submitBtn" disabled={isSubmitting}>
-            {isSubmitting ? '正在同步云端...' : '提交修改后的档案'}
+            {isSubmitting ? '正在同步云端...' : '提交修改后的信息'}
           </button>
           <Link href={`/products/${id}`} className="btn btn-secondary cancelBtn">放弃修改</Link>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ToastContext';
 import Modal from '@/components/Modal';
@@ -35,7 +36,7 @@ export default function NewProductPage() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setCategories(data.data.map((c: any) => c.name));
+          setCategories(data.data.map((c: { name: string }) => c.name));
         }
       });
   }, []);
@@ -100,12 +101,12 @@ export default function NewProductPage() {
       });
       const data = await res.json();
       if (data.success) {
-        showToast('货品档案已成功建立', 'success');
+        showToast('货品信息已成功建立', 'success');
         router.push('/products');
       } else {
         showToast(data.message || '保存失败', 'error');
       }
-    } catch (error) {
+    } catch {
       showToast('请求失败，请检查网络', 'error');
     } finally {
       setIsSubmitting(false);
@@ -118,9 +119,9 @@ export default function NewProductPage() {
         <div className={styles.titleGroup}>
           <Link href="/products" className={styles.backLink}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            返回档案
+            返回列表
           </Link>
-          <h1 className={styles.title}>新增货品档案</h1>
+          <h1 className={styles.title}>新增货品信息</h1>
           <p className={styles.subtitle}>创建一个唯一的货品编码，并记录其详细信息</p>
         </div>
       </header>
@@ -235,7 +236,7 @@ export default function NewProductPage() {
           <div className={styles.imageGrid}>
             {images.map((img, index) => (
               <div key={index} className={styles.imageItem}>
-                <img src={img} alt="preview" className={styles.previewImg} />
+                <Image src={img} alt="preview" fill className={styles.previewImg} sizes="(max-width: 768px) 100vw, 150px" />
                 <button type="button" className={styles.removeBtn} onClick={() => removeImage(index)}>
                   ×
                 </button>
@@ -281,7 +282,7 @@ export default function NewProductPage() {
 
         <div className={styles.formActions}>
           <button type="submit" className="btn btn-primary submitBtn" disabled={isSubmitting}>
-            {isSubmitting ? '正在提交...' : '确认并保存档案'}
+            {isSubmitting ? '正在提交...' : '确认并保存信息'}
           </button>
           <Link href="/products" className="btn btn-secondary cancelBtn">取消</Link>
         </div>

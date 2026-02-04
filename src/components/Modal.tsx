@@ -32,9 +32,9 @@ export default function Modal({
 }: ModalProps) {
   const [inputValue, setInputValue] = useState(defaultValue);
 
+
   useEffect(() => {
     if (isOpen) {
-      setInputValue(defaultValue);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -42,7 +42,8 @@ export default function Modal({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen, defaultValue]);
+  }, [isOpen]);
+
 
   if (!isOpen) return null;
 

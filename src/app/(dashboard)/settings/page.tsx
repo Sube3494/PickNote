@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/components/ThemeContext';
-import { useToast } from '@/components/ToastContext';
 import styles from './page.module.css';
+
 
 interface SystemStats {
   productCount: number;

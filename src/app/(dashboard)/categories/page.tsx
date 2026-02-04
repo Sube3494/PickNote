@@ -85,8 +85,8 @@ export default function CategoriesPage() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <h1 className={styles.title}>资产分类档案库</h1>
-        <p className={styles.subtitle}>穿透底层货品逻辑，建立稳健、可扩展的品类分片体系</p>
+        <h1 className={styles.title}>货品分类信息库</h1>
+        <p className={styles.subtitle}>穿透底层货品逻辑，建立稳健、可扩展的品类体系</p>
       </header>
 
       <section className={styles.section}>
@@ -94,7 +94,7 @@ export default function CategoriesPage() {
           <div className={styles.sectionTitleGroup}>
             <h2 className={styles.sectionTitle}>全库品类仪表盘</h2>
             <p className={styles.sectionDesc}>
-              {loading ? '正在同步云端分类数据...' : `系统当前共识别到 ${categories.length} 个活跃资产分片`}
+              {loading ? '正在同步云端分类数据...' : `系统当前共识别到 ${categories.length} 个活跃货品分类`}
             </p>
           </div>
           <div className={styles.icon}>
@@ -130,7 +130,7 @@ export default function CategoriesPage() {
                   <>
                     <div className={styles.catInfo}>
                       <span className={styles.catName}>{cat.name}</span>
-                      <span className={styles.catCount}>{cat.count} 项关联资产</span>
+                      <span className={styles.catCount}>{cat.count} 项关联货品</span>
                     </div>
                     <div className={styles.catActions}>
                       <button 
@@ -154,8 +154,8 @@ export default function CategoriesPage() {
             ))}
             {!loading && categories.length === 0 && (
               <div style={{ textAlign: 'center', gridColumn: '1/-1', padding: '4rem', color: 'var(--color-text-dim)' }}>
-                <p style={{ fontWeight: 600 }}>系统暂无活跃资产分片</p>
-                <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>请前往货品档案库录入新数据以自动初始化品类。</p>
+                <p style={{ fontWeight: 600 }}>系统暂无活跃货品分类</p>
+                <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>请前往货品信息中心录入新数据以自动初始化品类。</p>
               </div>
             )}
           </div>
@@ -164,9 +164,9 @@ export default function CategoriesPage() {
 
       <Modal 
         isOpen={!!deleteConfirm}
-        title="确认注销资产分类"
-        message={`确定要彻底注销品类 "${deleteConfirm}" 吗？注销后，该品类下的所有关联资产将被自动迁移至 "其他" 默认分类。此操作具有全局穿透性，不可撤销。`}
-        confirmText="确认注销"
+        title="确认删除货品分类"
+        message={`确定要彻底删除品类 "${deleteConfirm}" 吗？删除后，该品类下的所有关联货品将被自动迁移至 "其他" 默认分类。此操作具有全局穿透性，不可撤销。`}
+        confirmText="确认删除"
         type="danger"
         onConfirm={() => deleteConfirm && handleDelete(deleteConfirm)}
         onClose={() => setDeleteConfirm(null)}

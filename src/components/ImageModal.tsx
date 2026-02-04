@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import Image from 'next/image';
 import styles from './ImageModal.module.css';
+
 
 interface ImageModalProps {
   src: string;
@@ -28,7 +30,18 @@ export default function ImageModal({ src, onClose }: ImageModalProps) {
         <button className={styles.closeBtn} onClick={onClose}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
-        <img src={src} alt="Full view" className={styles.image} />
+        <div className={styles.imageWrapper}>
+          <Image 
+            src={src} 
+            alt="Full view" 
+            className={styles.image} 
+            fill
+            sizes="90vw"
+            quality={90}
+            priority
+          />
+        </div>
+
       </div>
     </div>
   );

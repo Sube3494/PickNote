@@ -1,9 +1,9 @@
 .header {
-  height: 72px;
+  height: 64px;
   padding: 0 2rem;
   background: var(--color-header-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--color-border-subtle);
   display: flex;
   align-items: center;
@@ -11,12 +11,20 @@
   position: sticky;
   top: 0;
   z-index: 90;
+  transition: all var(--duration-normal);
+}
+
+.welcome {
+  font-size: var(--text-sm);
+  color: var(--color-text-dim);
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .searchWrapper {
   display: flex;
   align-items: center;
-  background: var(--color-bg-subtle);
+  background: var(--color-bg-alt);
   padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
@@ -25,13 +33,13 @@
 }
 
 .searchWrapper:focus-within {
-  background: var(--color-bg);
+  background: var(--color-bg-card);
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-primary-soft);
 }
 
 .searchIcon {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--color-text-dim);
   margin-right: 0.75rem;
 }
@@ -39,7 +47,7 @@
 .searchInput {
   border: none;
   background: transparent;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--color-text);
   width: 100%;
   outline: none;
@@ -48,37 +56,40 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .themeToggle {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
-  background: var(--color-bg);
+  background: transparent;
   border: 1px solid var(--color-border);
-  color: var(--color-text-muted);
+  color: var(--color-text-dim);
   transition: var(--transition);
   cursor: pointer;
 }
 
 .themeToggle:hover {
-  background: var(--color-bg-subtle);
+  background: var(--color-bg-card);
   color: var(--color-primary);
-  border-color: var(--color-primary);
-  transform: rotate(12deg);
+  border-color: var(--color-text-muted);
 }
 
 .notification {
-  font-size: 1.25rem;
-  cursor: pointer;
   position: relative;
   padding: 0.25rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-dim);
+  cursor: pointer;
+  transition: color var(--duration-fast);
+}
+
+.notification:hover {
+  color: var(--color-text);
 }
 
 .notification::after {
@@ -90,5 +101,6 @@
   height: 8px;
   background: var(--color-error);
   border-radius: 50%;
-  border: 2px solid var(--color-bg);
+  border: 2px solid var(--color-header-bg);
 }
+
