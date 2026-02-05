@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { CustomSelect } from './CustomSelect';
 import styles from './CategorySelector.module.css';
 
 interface Category {
@@ -121,21 +122,19 @@ export default function CategorySelector({ value, onChange, disabled }: Category
     return parts.join(' > ');
   };
 
-  const handleLevel1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setSelectedLevel1(value);
+  const handleLevel1Select = (val: string | number) => {
+    setSelectedLevel1(String(val));
     setSelectedLevel2('');
     setSelectedLevel3('');
   };
 
-  const handleLevel2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setSelectedLevel2(value);
+  const handleLevel2Select = (val: string | number) => {
+    setSelectedLevel2(String(val));
     setSelectedLevel3('');
   };
 
-  const handleLevel3Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedLevel3(e.target.value);
+  const handleLevel3Select = (val: string | number) => {
+    setSelectedLevel3(String(val));
   };
 
   if (loading) {
@@ -146,57 +145,64 @@ export default function CategorySelector({ value, onChange, disabled }: Category
     <div className={styles.container}>
       <div className={styles.cascadeWrapper}>
         {/* 一级分类 */}
-        <select
-          className={styles.select}
+        <CustomSelect
           value={selectedLevel1}
-          onChange={handleLevel1Change}
+          onChange={handleLevel1Select}
+          options={level1Categories.map(cat => ({ label: cat.name, value: cat.id }))}
+          placeholder="选择一级分类"
           disabled={disabled}
-        >
-          <option value="">选择一级分类</option>
-          {level1Categories.map(cat => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+          className={styles.selector}
+          footer={
+            <div 
+              onClick={(e) => {
+                e.stopPropagation();
+                window.location.href = '/categories';
+              }}
+              style={{ 
+                color: 'var(--color-primary)', 
+                fontSize: '0.8125rem', 
+                fontWeight: 700,
+                textAlign: 'center',
+                padding: '4px 0',
+                cursor: 'pointer'
+              }}
+            >
+              + 新增/管理分类
+            </div>
+          }
+        />
 
         {/* 二级分类 */}
         {selectedLevel1 && (
           <>
-            <div className={styles.arrow}>→</div>
-            <select
-              className={styles.select}
+            <div className={styles.arrowIcon}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+            <CustomSelect
               value={selectedLevel2}
-              onChange={handleLevel2Change}
+              onChange={handleLevel2Select}
+              options={level2Categories.map(cat => ({ label: cat.name, value: cat.id }))}
+              placeholder="选择二级分类 (可选)"
               disabled={disabled || level2Categories.length === 0}
-            >
-              <option value="">选择二级分类（可选）</option>
-              {level2Categories.map(cat => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+              className={styles.selector}
+            />
           </>
         )}
 
         {/* 三级分类 */}
         {selectedLevel2 && (
           <>
-            <div className={styles.arrow}>→</div>
-            <select
-              className={styles.select}
+            <div className={styles.arrowIcon}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+            <CustomSelect
               value={selectedLevel3}
-              onChange={handleLevel3Change}
+              onChange={handleLevel3Select}
+              options={level3Categories.map(cat => ({ label: cat.name, value: cat.id }))}
+              placeholder="选择三级分类 (可选)"
               disabled={disabled || level3Categories.length === 0}
-            >
-              <option value="">选择三级分类（可选）</option>
-              {level3Categories.map(cat => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+              className={styles.selector}
+            />
           </>
         )}
       </div>

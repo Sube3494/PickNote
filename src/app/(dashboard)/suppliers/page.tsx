@@ -46,7 +46,7 @@ export default function SuppliersPage() {
           <p className={styles.subtitle}>维护采购渠道及其联系方式，确保供应链路稳定透明</p>
         </div>
         <div className={styles.headerActions}>
-          <Link href="/suppliers/new" className="btn btn-primary" style={{borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 700}}>
+          <Link href="/suppliers/new" className="btn btn-primary">
             录入核心供应商
           </Link>
         </div>

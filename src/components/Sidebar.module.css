@@ -153,13 +153,30 @@
   border-color: var(--color-text-muted);
 }
 
+/* Mobile Backdrop */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 95;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal);
+}
+
+.backdropOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);
     box-shadow: var(--shadow-2xl);
   }
   
-  .sidebar.open {
+  .sidebarOpen {
     transform: translateX(0);
   }
 }

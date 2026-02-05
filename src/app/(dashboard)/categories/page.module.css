@@ -37,24 +37,7 @@
 }
 
 .primaryBtn {
-  background: var(--color-primary);
-  color: white !important;
-  font-weight: 700;
-  font-size: 0.8125rem;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 1px solid var(--color-primary);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.primaryBtn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+  composes: btn btn-primary from global;
 }
 
 /* Section */
@@ -113,10 +96,12 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  min-height: var(--input-height, 48px);
+  padding: 0 1rem;
   background: var(--color-bg-alt);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .categoryItem:hover {
@@ -264,11 +249,12 @@
 
 .renameInput {
   flex: 1;
-  padding: 0.5rem 0.75rem;
+  height: 36px;
+  padding: 0 0.75rem;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   background: var(--color-bg-card);
   color: var(--color-text);
   outline: none;
@@ -277,18 +263,19 @@
 
 .renameInput:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
 }
 
 /* Modal Input */
 .modalInput {
   width: 100%;
-  padding: 0.75rem 1rem;
+  height: var(--input-height, 48px);
+  padding: 0 1rem;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  font-weight: 500;
-  background: var(--color-bg-card);
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  background-color: var(--color-bg-card);
   color: var(--color-text);
   outline: none;
   transition: all 0.2s ease;
@@ -296,5 +283,5 @@
 
 .modalInput:focus {
   border-color: var(--color-primary);
-  box-shadow: 0  0 0 3px var(--color-primary-soft);
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
 }

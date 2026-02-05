@@ -82,7 +82,7 @@
   letter-spacing: 0.05em;
 }
 
-.input, .select, .textarea {
+.input, .textarea {
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
@@ -92,7 +92,7 @@
   transition: var(--transition);
 }
 
-.input:focus, .select:focus, .textarea:focus {
+.input:focus, .textarea:focus {
   outline: none;
   border-color: var(--color-primary);
   background: var(--color-bg);

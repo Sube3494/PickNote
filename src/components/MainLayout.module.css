@@ -5,7 +5,7 @@
 
 .main {
   flex: 1;
-  margin-left: 260px; /* Enhanced width */
+  margin-left: 260px; /* Sidebar width */
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -13,7 +13,8 @@
 
 .content {
   flex: 1;
-  padding: 2.5rem 2rem;
+  padding: 2rem;
+  /* Add margin top if Header is fixed, but Header is sticky inside main */
 }
 
 .container {

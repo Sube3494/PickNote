@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ToastContext';
 import CategorySelector from '@/components/CategorySelector';
+import { CustomSelect } from '@/components/CustomSelect';
 import Link from 'next/link';
 import styles from './page.module.css';
 
@@ -27,9 +28,6 @@ export default function NewProductPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [suppliers, setSuppliers] = useState<Array<{id: string; name: string; type: string; contactName?: string}>>([]);
-  const [isSupplierOpen, setIsSupplierOpen] = useState(false);
-  
-  const supplierRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // 加载供应商
@@ -42,15 +40,7 @@ export default function NewProductPage() {
       });
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (supplierRef.current && !supplierRef.current.contains(event.target as Node)) {
-        setIsSupplierOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -172,56 +162,29 @@ export default function NewProductPage() {
             
             <div className={styles.fieldFull}>
               <label className={styles.label}>主要采销渠道 (关联供应商)</label>
-              <div className={styles.selectWrapper} ref={supplierRef}>
-                <div 
-                  className={`${styles.input} ${styles.selectTrigger} ${isSupplierOpen ? styles.selectTriggerOpen : ''}`}
-                  onClick={() => setIsSupplierOpen(!isSupplierOpen)}
-                >
-                  <span>{formData.channel || '关联一个已存在的供应商'}</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </div>
-                {isSupplierOpen && (
-                  <div className={styles.dropdownMenu}>
-                    {suppliers.length > 0 ? (
-                      suppliers.map(s => (
-                        <div 
-                          key={s.id} 
-                          className={`${styles.dropdownOption} ${formData.channel === s.name ? styles.dropdownOptionActive : ''}`}
-                          onClick={() => {
-                            setFormData(prev => ({ ...prev, channel: s.name }));
-                            setIsSupplierOpen(false);
-                          }}
-                        >
-                          <div>
-                            <div style={{fontWeight: 700}}>{s.name}</div>
-                            <div style={{fontSize: '0.75rem', opacity: 0.6}}>{s.type} · {s.contactName || '无记录'}</div>
-                          </div>
-                          {formData.channel === s.name && (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <div className={styles.dropdownOption} style={{opacity: 0.5, cursor: 'default'}}>
-                        请先录入供应商信息
-                      </div>
-                    )}
-                    <div className={styles.dropdownDivider}></div>
-                    <Link href="/suppliers/new" className={`${styles.dropdownOption} ${styles.addOption}`}>
+              <CustomSelect
+                value={formData.channel}
+                onChange={(val) => setFormData(prev => ({ ...prev, channel: String(val) }))}
+                options={suppliers.map(s => ({
+                  label: s.name,
+                  value: s.name,
+                  subtitle: `${s.type} · ${s.contactName || '无记录'}`
+                }))}
+                placeholder="关联一个已存在的供应商"
+                className={styles.select}
+                footer={
+                  <Link href="/suppliers/new" className={styles.addOption}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0.5rem 0.75rem' }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="12" y1="8" x2="12" y2="16"></line>
                         <line x1="8" y1="12" x2="16" y2="12"></line>
                       </svg>
                       <span>去录入供应商...</span>
-                    </Link>
-                  </div>
-                )}
-              </div>
+                    </div>
+                  </Link>
+                }
+              />
             </div>
           </div>
         </section>

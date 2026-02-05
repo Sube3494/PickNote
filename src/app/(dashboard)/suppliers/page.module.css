@@ -41,11 +41,10 @@
   justify-content: space-between;
   align-items: center;
   background: var(--color-bg-card);
-  padding: 1.25rem 1.75rem;
-  border-radius: var(--radius-2xl);
+  padding: 1.25rem;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
-  backdrop-filter: blur(10px);
 }
 
 .searchBox {
@@ -54,31 +53,35 @@
   gap: 0.875rem;
   flex: 1;
   max-width: 520px;
+  height: var(--input-height, 48px);
+  background: var(--color-bg-alt);
+  padding: 0 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+}
+
+.searchBox:focus-within {
+  border-color: var(--color-primary);
+  background: var(--color-bg-card);
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
 }
 
 .searchIcon {
-  color: var(--color-primary);
+  color: var(--color-text-dim);
   opacity: 0.8;
 }
 
-.searchInput {
-  border: none;
-  background: transparent;
-  font-size: 1rem;
+input.searchInput {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  font-size: 0.9375rem;
   font-weight: 600;
   width: 100%;
   color: var(--color-text);
-  padding: 0.25rem 0;
-}
-
-.searchInput::placeholder {
-  color: var(--color-text-dim);
-  font-weight: 500;
-  opacity: 0.6;
-}
-
-.searchInput:focus {
   outline: none;
+  height: 100%;
 }
 
 /* Supplier Grid */

@@ -173,7 +173,7 @@ export default function ProductsPage() {
           )}
         </div>
         
-        <div className={styles.categoryScroller}>
+        <div className={`${styles.categoryScroller} u-flex-center`}>
           <button
             className={`${styles.tabBtn} ${selectedCategory === '全部' ? styles.tabActive : ''}`}
             onClick={() => {

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/ToastContext';
 import Modal from '@/components/Modal';
+import { CustomSelect } from '@/components/CustomSelect';
 import styles from './page.module.css';
 
 interface Category {
@@ -305,35 +306,33 @@ export default function CategoriesPage() {
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.875rem' }}>
               层级
             </label>
-            <select
-              className={styles.modalInput}
+            <CustomSelect
               value={addForm.level}
-              onChange={(e) => setAddForm({ ...addForm, level: parseInt(e.target.value), parentId: '' })}
-            >
-              <option value={1}>一级分类</option>
-              <option value={2}>二级分类</option>
-              <option value={3}>三级分类</option>
-            </select>
+              onChange={(val) => setAddForm({ ...addForm, level: Number(val), parentId: '' })}
+              options={[
+                { label: '一级分类', value: 1 },
+                { label: '二级分类', value: 2 },
+                { label: '三级分类', value: 3 },
+              ]}
+              placeholder="请选择层级"
+            />
           </div>
           {addForm.level > 1 && (
             <div>
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.875rem' }}>
                 父分类
               </label>
-              <select
-                className={styles.modalInput}
+              <CustomSelect
                 value={addForm.parentId}
-                onChange={(e) => setAddForm({ ...addForm, parentId: e.target.value })}
-              >
-                <option value="">请选择...</option>
-                {parentOptions
+                onChange={(val) => setAddForm({ ...addForm, parentId: String(val) })}
+                options={parentOptions
                   .filter(c => c.level === addForm.level - 1)
-                  .map(c => (
-                    <option key={c.id} value={c.id}>
-                      {c.name} (L{c.level})
-                    </option>
-                  ))}
-              </select>
+                  .map(c => ({
+                    label: `${c.name} (L${c.level})`,
+                    value: c.id
+                  }))}
+                placeholder="请选择父分类"
+              />
             </div>
           )}
         </div>

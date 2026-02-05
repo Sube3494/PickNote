@@ -98,18 +98,6 @@
   letter-spacing: 0.05em;
 }
 
-.input, .textarea, .select {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-alt);
-  color: var(--color-text);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
 .input:focus, .textarea:focus, .select:focus {
   outline: none;
   border-color: var(--color-primary);
@@ -186,23 +174,16 @@
 .formActions {
   display: flex;
   gap: 1rem;
-  padding-top: 1rem;
-}
-
-.formActions button, .formActions a {
-  height: 54px;
-  border-radius: 14px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding-top: 1.5rem;
 }
 
 .submitBtn {
+  composes: btn btn-primary from global;
   flex: 2;
 }
 
 .cancelBtn {
+  composes: btn btn-secondary from global;
   flex: 1;
 }
 

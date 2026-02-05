@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { CustomSelect } from '@/components/CustomSelect';
 import styles from './page.module.css';
 
 interface Purchase {
@@ -86,7 +87,7 @@ export default function PurchasesPage() {
           <h1 className={styles.title}>进货管理总览</h1>
           <p className={styles.subtitle}>监控全站采供流水，实时汇总业务入库数据</p>
         </div>
-        <Link href="/purchases/new" className="btn btn-primary" style={{borderRadius: '12px', padding: '0.75rem 1.5rem', fontWeight: 700}}>
+        <Link href="/purchases/new" className="btn btn-primary">
           录入进货单据
         </Link>
       </header>
@@ -114,17 +115,19 @@ export default function PurchasesPage() {
           </h2>
           
           <div className={styles.filterBar}>
-            <select 
+            <CustomSelect
               className={styles.filterSelect}
               value={supplierId}
-              onChange={(e) => {
-                setSupplierId(e.target.value);
+              onChange={(val) => {
+                setSupplierId(String(val));
                 setPage(1);
               }}
-            >
-              <option value="">全部供应渠道 (无筛选)</option>
-              {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
+              options={[
+                { label: '全部供应渠道 (无筛选)', value: '' },
+                ...suppliers.map(s => ({ label: s.name, value: s.id }))
+              ]}
+              placeholder="筛选供应商"
+            />
           </div>
         </div>
 

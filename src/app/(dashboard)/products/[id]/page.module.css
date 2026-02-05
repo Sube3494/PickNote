@@ -2,773 +2,394 @@
   animation: pageIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  max-width: 1400px;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 1rem 0 4rem;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-}
-
-.titleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  align-items: center;
+  padding: 0 1rem;
 }
 
 .backLink {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  text-decoration: none;
-  margin-bottom: 0.25rem;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .backLink:hover {
-  filter: brightness(1.2);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  transform: translateX(-4px);
 }
 
-.header {
+.iconActions {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.iconBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--color-text-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.iconBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.deleteBtn:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: var(--color-error-soft);
 }
 
 .container {
-  /* 退化为普通包裹层 */
-  width: 100%;
-}
-
-.productCard {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-md);
   display: grid;
-  grid-template-columns: 400px 1fr;
-  gap: 3.5rem;
-  padding: 2.5rem;
+  grid-template-columns: 480px 1fr;
+  gap: 5rem;
+  padding: 0 1rem;
   align-items: start;
 }
 
-/* Gallery Controls */
+/* Gallery Section - Pure & Focused */
 .imageSection {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  width: 400px;
-  flex: none;
-  position: relative; /* 移除 sticky，因为在 Grid 内部 */
-  z-index: 10;
+  position: sticky;
+  top: 2rem;
 }
 
 .galleryContainer {
   position: relative;
-  width: 400px !important;
-  height: 400px !important;
-  min-width: 400px !important;
-  min-height: 400px !important;
-  max-width: 400px !important;
-  max-height: 400px !important;
-  box-sizing: border-box;
+  width: 100%;
+  aspect-ratio: 1;
   background: #fff;
-  border-radius: var(--radius-2xl);
+  border-radius: 32px;
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
   overflow: hidden;
-  clip-path: inset(0 round var(--radius-2xl));
+  box-shadow: var(--shadow-premium);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
 .mainImageWrapper {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: zoom-in;
   position: relative;
+  cursor: zoom-in;
 }
 
 .mainImageDisplay {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
-}
-
-/* 滑入动画 */
-.imageSlideIn {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.imageSlideIn[data-direction="right"] {
-  animation: slideInFromRight 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.imageSlideIn[data-direction="left"] {
-  animation: slideInFromLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* 滑出动画 */
-.imageSlideOut {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.imageSlideOut[data-direction="right"] {
-  animation: slideOutToLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.imageSlideOut[data-direction="left"] {
-  animation: slideOutToRight 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* 从右侧滑入 */
-@keyframes slideInFromRight {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-/* 从左侧滑入 */
-@keyframes slideInFromLeft {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-/* 向左滑出 */
-@keyframes slideOutToLeft {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-}
-
-/* 向右滑出 */
-@keyframes slideOutToRight {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(100%);
-  }
-}
-
-
-
-
-.galleryNav {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
-  display: flex;
-  justify-content: space-between;
-  padding: 0 1rem;
-  pointer-events: none;
-  z-index: 30;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.galleryContainer:hover .galleryNav {
-  opacity: 1;
-}
-
-.navBtn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  pointer-events: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  color: var(--color-text);
-}
-
-.navBtn:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.navBtn:active {
-  transform: scale(0.95);
 }
 
 .thumbnailGrid {
   display: flex;
-  gap: 0.75rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  scrollbar-width: none;
+  gap: 1rem;
+  padding: 0.5rem;
 }
 
 .thumbnail {
-  position: relative; /* 关键：为删除按钮提供基准 */
   width: 64px;
   height: 64px;
-  flex-shrink: 0;
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   border: 2px solid transparent;
-  overflow: hidden;
-  cursor: pointer;
+  padding: 4px;
   background: var(--color-bg-card);
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-in-out);
 }
 
 .thumbnailActive {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px var(--color-primary-soft);
+  background: var(--color-primary-soft);
+  transform: scale(1.05);
 }
 
-.mainThumbnailFill {
+.thumbnail img {
   width: 100%;
   height: 100%;
-  object-fit: cover !important; /* 强制覆盖，解决拉伸 */
-  display: block;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
-.removeImageBtn {
-  position: absolute;
-  top: 4px; /* 增加边距，防止太靠边 */
-  right: 4px;
-  width: 20px; /* 稍微放大，方便点击 */
-  height: 20px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.7);
-  color: #fff;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s ease;
-  z-index: 10; /* 确保在图片之上 */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.removeImageBtn:hover {
-  background: var(--color-error);
-}
-
-.uploadBtn {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-lg);
-  border: 2px dashed var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background: var(--color-bg-alt);
-  transition: all 0.2s ease;
-}
-
-.uploadBtn:hover {
-  border-color: var(--color-primary);
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-}
-
-.hiddenInput {
-  display: none;
-}
-
-/* Data Sections */
+/* Content Section - High Hierarchy */
 .detailsSection {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 3rem;
+  padding-top: 1rem;
 }
 
-.detailsCard {
-  /* 移除卡片样式，变为透明容器 */
+.heroContent {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 0;
-  border: none;
-  background: transparent;
-  box-shadow: none;
+  gap: 1rem;
 }
 
-.titleSection {
+.heroLabels {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.categoryBadge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.codeLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-dim);
+  font-family: var(--font-mono);
 }
 
 .pageTitle {
-  font-size: 1.4rem;
-  line-height: 1.4;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 2.75rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
   color: var(--color-text);
-  word-break: break-all;
+  word-break: break-word;
 }
 
-
-.titleInput {
-  width: 100%;
-  padding: 0.5rem 0;
-  border: none;
-  border-bottom: 2px solid var(--color-border);
-  background: transparent;
-  color: var(--color-text);
-  font-size: 1.5rem;
-  font-weight: 700;
-  border-radius: 0;
-  transition: all 0.2s ease;
+/* Asset / Stats Section */
+.assetSection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
-.titleInput:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  background: transparent;
-  box-shadow: none;
-}
-
-/* 统一的输入组件基础样式 */
-.infoInput,
-.remarkTextarea {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
+.assetCard {
   background: var(--color-bg-card);
-  color: var(--color-text);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.infoInput:hover,
-.remarkTextarea:hover {
-  border-color: var(--color-border-hover);
-  background: #fff;
-}
-
-.infoInput:focus,
-.remarkTextarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  background: #fff;
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
-}
-
-.remarkTextarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-/* For Seamless Stock Editing */
-.transparentInput {
-  background: transparent !important;
-  border: none !important;
-  border-bottom: 2px dashed var(--color-border) !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  color: inherit !important;
-  font-family: inherit !important;
-  font-weight: inherit !important;
-  font-size: inherit !important;
-  height: auto !important;
-  width: auto !important; /* Let it grow */
-  min-width: 60px;
-  text-align: center; 
-}
-
-.transparentInput:focus {
-  border-bottom-color: var(--color-primary) !important;
-  outline: none !important;
-  background: rgba(var(--primary-rgb), 0.05) !important;
-}
-
-.selectWrapper {
-  position: relative;
-  width: 100%;
-}
-
-
-
-.remarkTextarea {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background: #fff;
-  color: var(--color-text);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  resize: vertical;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-.remarkTextarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  background: #fff;
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
-}
-
-/* Main Info Section */
-.headerMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.metaBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.25rem 0.625rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: var(--color-bg-alt);
-  color: var(--color-text-muted);
-  border: 1px solid var(--color-border);
-}
-
-.statsCard {
-  background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
   border: 1px solid var(--color-border-subtle);
-  border-radius: 16px;
-  padding: 1.5rem 2rem;
+  border-radius: 24px;
+  padding: 1.75rem;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 1rem 0 1.5rem 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  transition: transform 0.3s ease;
 }
 
-.statItem {
+.assetCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.assetLabel {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.assetValue {
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-text);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.assetUnit {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text-dim);
+}
+
+.lowStock {
+  color: var(--color-error);
+}
+
+/* Details Grid */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  padding: 2rem;
+  background: var(--color-bg-alt);
+  border-radius: 24px;
+}
+
+.detailItem {
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
 }
 
-.statLabel {
-  font-size: 0.7rem;
+.detailLabel {
+  font-size: 0.6875rem;
+  font-weight: 800;
   color: var(--color-text-dim);
-  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
+  letter-spacing: 0.1em;
 }
 
-.propertiesGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 1.5rem 0;
+.detailValue {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
 }
 
-.divider {
-  height: 1px;
-  background: var(--color-border-subtle);
-  width: 100%;
-}
-
-.subInfoSection {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-}
-
+/* Remark Section */
 .remarkSection {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border-subtle);
+  gap: 1rem;
 }
 
+.remarkContent {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  padding: 1.5rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 20px;
+  min-height: 100px;
+}
+
+/* History Section */
 .historySection {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.infoGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.infoField {
+.sectionHeader h3 {
+  font-size: 0.875rem;
+  font-weight: 900;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.historyList {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; /* 增加标签与内容的距离 */
+  gap: 0.75rem;
 }
 
-/* 库存强化样式 */
-.stockEmphasis {
-  display: flex;
-  align-items: baseline;
-  gap: 0.375rem;
-}
-
-.stockEmphasis .infoValue {
-  font-size: 1.6rem;
-  line-height: 1;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #6366f1 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 800;
-}
-
-.unit {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-text-dim);
-}
-
-.unitSmall {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text-dim);
-}
-
-.infoLabel {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--color-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.infoValue {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.lowStock {
-  background: linear-gradient(135deg, var(--color-error) 0%, #f43f5e 100%) !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-}
-
-.badge {
-  background: var(--color-bg-alt);
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-  color: var(--color-primary);
-  font-size: 0.875rem;
-  font-weight: 700;
-}
-
-
-
-.selectWrapper {
-  position: relative;
-  width: 100%;
-}
-
-.dropdownMenu {
-  position: absolute;
-  top: calc(100% + 5px);
-  left: 0;
-  min-width: 100%;
-  width: max-content;
+.historyItem {
+  display: grid;
+  grid-template-columns: 120px 1fr 100px 100px;
+  padding: 1.25rem 1.5rem;
   background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  box-shadow: var(--shadow-lg);
-  z-index: 100;
-  max-height: 300px;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.dropdownMenu::-webkit-scrollbar {
-  display: none;
-}
-
-.dropdownOption {
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--color-text);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.dropdownOption:hover {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-}
-
-.dropdownDivider {
-  height: 1px;
-  background: var(--color-border-subtle);
-  margin: 0.25rem 0;
-}
-
-.addOption {
-  color: var(--color-primary);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.addOption:hover {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-}
-
-
-
-.remarkBox {
-  min-height: 80px;
-  padding: 1rem;
-  background: var(--color-bg-alt);
-  border-radius: 12px;
-  font-size: 0.9375rem;
-  color: var(--color-text-muted);
   border: 1px solid var(--color-border-subtle);
-}
-
-.zoomLens {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border: 1px solid var(--color-primary);
-  background: rgba(255, 255, 255, 0.4);
-  cursor: crosshair;
-  pointer-events: none;
-  z-index: 20;
-}
-
-.zoomWindow {
-  position: absolute;
-  top: 0;
-  left: 105%; /* Position to the right of the gallery */
-  width: 400px; /* Match new main image size */
-  height: 400px;
-  border: 1px solid var(--color-border);
-  background-color: #fff;
-  z-index: 100;
-  overflow: hidden;
-  box-shadow: var(--shadow-xl);
-  border-radius: var(--radius-lg);
-  display: block;
-}
-
-
-.iconActions { display: flex; gap: 0.5rem; }
-.iconBtn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-alt);
-  display: flex;
+  border-radius: 16px;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  gap: 1rem;
   transition: all 0.2s ease;
-  color: var(--color-text-muted);
 }
 
-.iconBtn:hover {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
+.historyItem:hover {
   border-color: var(--color-primary-soft-bold);
+  transform: translateX(4px);
 }
 
-.deleteBtn:hover {
-  background: var(--color-error-soft);
-  color: var(--color-error);
-  border-color: var(--color-error);
-}
-
-/* History Table */
-.historyTableWrapper {
-  background: var(--color-bg-alt);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  border: 1px solid var(--color-border-subtle);
-}
-
-.historyTable {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.historyTable th {
-  background: var(--color-bg-subtle);
-  text-align: left;
-  padding: 0.875rem 1.25rem;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.historyTable td {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-border-subtle);
-  font-size: 0.9rem;
+.historyDate {
+  font-size: 0.8125rem;
   font-weight: 600;
+  color: var(--color-text-dim);
 }
 
-.historyTable tr:last-child td { border-bottom: none; }
+.historySupplier {
+  font-weight: 700;
+  color: var(--color-text);
+}
 
-.emptyHistory { text-align: center; padding: 3rem; color: var(--color-text-dim); }
+.historyPrice {
+  font-weight: 800;
+  color: var(--color-primary);
+  text-align: right;
+}
+
+.historyQty {
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.emptyState {
+  padding: 3rem;
+  text-align: center;
+  color: var(--color-text-dim);
+  font-weight: 600;
+  background: var(--color-bg-alt);
+  border-radius: 20px;
+  border: 2px dashed var(--color-border);
+}
 
 @keyframes pageIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 1100px) {
-  .detailsCard { padding: 1.5rem; gap: 2rem; }
-  .mainInfoSection { grid-template-columns: 1fr; gap: 2rem; }
-  .subInfoSection { grid-template-columns: 1fr; gap: 1.5rem; }
-  .groupContent { grid-template-columns: 1fr; }
-  .container { grid-template-columns: 1fr; gap: 2rem; }
-  .imageSection { position: relative; top: 0; }
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .imageSection {
+    position: static;
+  }
 }

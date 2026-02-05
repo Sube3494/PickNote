@@ -47,55 +47,73 @@ const navItems = [
   { label: '深度分析', href: '/stats', Icon: Icons.Stats },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <div className={styles.logoIcon}>P</div>
-        <span>PickNote</span>
-      </div>
-      
-      <nav className={styles.nav}>
-        <div className={styles.navGroup}>
-          <div className={styles.navLabel}>Menu</div>
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`${styles.navItem} ${
-                pathname === item.href ? styles.navItemActive : ''
-              }`}
+    <>
+      {/* Mobile Backdrop */}
+      <div 
+        className={`${styles.backdrop} ${isOpen ? styles.backdropOpen : ''}`}
+        onClick={onClose}
+      />
+
+      <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
+        <div className={styles.logo}>
+          <div className={styles.logoIcon}>P</div>
+          <span>PickNote</span>
+        </div>
+        
+        <nav className={styles.nav}>
+          <div className={styles.navGroup}>
+            <div className={styles.navLabel}>Menu</div>
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose} // Auto-close on navigation
+                className={`${styles.navItem} ${
+                  pathname === item.href ? styles.navItemActive : ''
+                }`}
+              >
+                <span className={styles.navIcon}><item.Icon /></span>
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
+        
+        <div className={styles.footer}>
+          <div className={styles.footerRow}>
+            <Link 
+              href="/settings" 
+              onClick={onClose}
+              className={`${styles.navItem} ${styles.settingsLink} ${pathname === '/settings' ? styles.navItemActive : ''}`}
             >
-              <span className={styles.navIcon}><item.Icon /></span>
-              {item.label}
+              <span className={styles.navIcon}><Icons.Settings /></span>
+              系统设置
             </Link>
-          ))}
+            
+            <button 
+              className={styles.themeToggle} 
+              onClick={toggleTheme}
+              title={theme === 'light' ? '切换暗色模式' : '切换浅色模式'}
+            >
+              {theme === 'light' ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="18.36" x2="5.64" y2="16.92"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              )}
+            </button>
+          </div>
         </div>
-      </nav>
-      
-      <div className={styles.footer}>
-        <div className={styles.footerRow}>
-          <Link href="/settings" className={`${styles.navItem} ${styles.settingsLink} ${pathname === '/settings' ? styles.navItemActive : ''}`}>
-            <span className={styles.navIcon}><Icons.Settings /></span>
-            系统设置
-          </Link>
-          
-          <button 
-            className={styles.themeToggle} 
-            onClick={toggleTheme}
-            title={theme === 'light' ? '切换暗色模式' : '切换浅色模式'}
-          >
-            {theme === 'light' ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="18.36" x2="5.64" y2="16.92"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            )}
-          </button>
-        </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }

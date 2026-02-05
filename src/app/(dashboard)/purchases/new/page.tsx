@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastContext';
+import { CustomSelect } from '@/components/CustomSelect';
 import styles from './page.module.css';
 
 interface Supplier {
@@ -163,15 +164,13 @@ export default function NewPurchasePage() {
             <div className={styles.infoGrid}>
               <div className={styles.field}>
                 <label className={styles.label}>供应商 / 渠道 *</label>
-                <select 
-                  className={styles.select}
+                <CustomSelect
                   value={supplierId}
-                  onChange={(e) => setSupplierId(e.target.value)}
-                  required
-                >
-                  <option value="">请选择供应商</option>
-                  {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                </select>
+                  onChange={(val) => setSupplierId(String(val))}
+                  options={suppliers.map(s => ({ label: s.name, value: s.id }))}
+                  placeholder="请选择供应商"
+                  className={styles.select}
+                />
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>进货日期</label>

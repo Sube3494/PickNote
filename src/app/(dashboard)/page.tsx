@@ -135,7 +135,7 @@ export default function Home() {
                           {firstImage ? (
                             <img src={firstImage} alt={product.name} />
                           ) : (
-                            '📦'
+                            <div className={styles.placeholderImg}>📦</div>
                           )}
                         </div>
                         <div className={styles.itemInfo}>
