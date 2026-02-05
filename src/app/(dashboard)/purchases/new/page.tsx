@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastContext';
 import { CustomSelect } from '@/components/CustomSelect';
+import { CustomDatePicker } from '@/components/CustomDatePicker';
+import { ProductSelectorModal } from '@/components/ProductSelectorModal';
 import styles from './page.module.css';
 
 interface Supplier {
@@ -41,11 +43,8 @@ export default function NewPurchasePage() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Product Search State
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
-  const [showResults, setShowResults] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
+  // Modal State
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
 
   useEffect(() => {
     // Fetch Suppliers
@@ -54,48 +53,19 @@ export default function NewPurchasePage() {
       .then(result => {
         if (result.success) setSuppliers(result.data);
       });
-      
-    // Handle Click Outside Search
-    const handleClickOutside = (e: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setShowResults(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Search Products
-  useEffect(() => {
-    if (searchQuery.length < 1) {
-      setSearchResults([]);
-      return;
-    }
-    const timer = setTimeout(() => {
-      fetch(`/api/products?search=${encodeURIComponent(searchQuery)}&limit=5`)
-        .then(res => res.json())
-        .then(result => {
-          if (result.success) setSearchResults(result.data);
-        });
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
-  const addItem = (product: Product) => {
-    if (items.find(i => i.productId === product.id)) {
-      showToast('该货品已在清单中', 'info');
-      return;
-    }
-    setItems([...items, {
-      productId: product.id,
-      productName: product.name,
-      productCode: product.code,
+  const handleAddProducts = (selectedProducts: Product[]) => {
+    const newItems = selectedProducts.map(p => ({
+      productId: p.id,
+      productName: p.name,
+      productCode: p.code || '',
       quantity: 1,
-      unitPrice: 0
-    }]);
-    setSearchQuery('');
-    setSearchResults([]);
-    setShowResults(false);
+      unitPrice: p.price || 0,
+    }));
+    setItems(prev => [...prev, ...newItems]);
+    showToast(`成功添加 ${selectedProducts.length} 个货品`, 'success');
   };
 
   const removeItem = (productId: string) => {
@@ -169,16 +139,13 @@ export default function NewPurchasePage() {
                   onChange={(val) => setSupplierId(String(val))}
                   options={suppliers.map(s => ({ label: s.name, value: s.id }))}
                   placeholder="请选择供应商"
-                  className={styles.select}
                 />
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>进货日期</label>
-                <input 
-                  type="date"
-                  className={styles.input}
+                <CustomDatePicker
                   value={purchaseDate}
-                  onChange={(e) => setPurchaseDate(e.target.value)}
+                  onChange={(val) => setPurchaseDate(val)}
                 />
               </div>
             </div>
@@ -240,37 +207,9 @@ export default function NewPurchasePage() {
               </tbody>
             </table>
 
-            <div className={styles.searchContainer} ref={searchRef}>
-              <div className={styles.addItemBtn} onClick={() => setShowResults(!showResults)}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                添加进货货品...
-              </div>
-              
-              {showResults && (
-                <div className={styles.searchList}>
-                  <div style={{ padding: '0.5rem' }}>
-                    <input 
-                      autoFocus
-                      className={styles.input}
-                      placeholder="输入货品名称或编码搜索..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                  {searchResults.map(p => (
-                    <div key={p.id} className={styles.searchItem} onClick={() => addItem(p)}>
-                      <div>
-                        <div style={{ fontWeight: 600 }}>{p.name}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-dim)' }}>{p.code}</div>
-                      </div>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    </div>
-                  ))}
-                  {searchQuery.length > 0 && searchResults.length === 0 && (
-                    <div style={{ padding: '1rem', textAlign: 'center', fontSize: '0.875rem' }}>未找到匹配货品</div>
-                  )}
-                </div>
-              )}
+            <div className={styles.addItemBtn} onClick={() => setIsProductModalOpen(true)}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              添加进货货品...
             </div>
           </section>
 
@@ -299,8 +238,12 @@ export default function NewPurchasePage() {
                   type="number"
                   className={styles.input}
                   style={{ width: '80px', height: '32px', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '0 0.5rem' }}
+                  min="0"
                   value={shippingFee}
-                  onChange={(e) => setShippingFee(parseFloat(e.target.value) || 0)}
+                  onChange={(e) => {
+                    const val = parseFloat(e.target.value) || 0;
+                    setShippingFee(Math.max(0, val));
+                  }}
                 />
               </div>
             </div>
@@ -323,6 +266,13 @@ export default function NewPurchasePage() {
           </div>
         </aside>
       </form>
+
+      <ProductSelectorModal 
+        isOpen={isProductModalOpen}
+        onClose={() => setIsProductModalOpen(false)}
+        onSelect={handleAddProducts}
+        excludeIds={items.map(i => i.productId)}
+      />
     </div>
   );
 }

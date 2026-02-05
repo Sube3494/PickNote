@@ -8,9 +8,12 @@ export const productSchema = z.object({
   spec: z.string().optional(),
   images: z.array(z.string()).optional(),
   remark: z.string().optional(),
-  currentStock: z.number().int().min(0).default(0),
-  minOrderQty: z.number().int().min(0).default(0),
+  currentStock: z.coerce.number().int().min(0).optional(),
+  minOrderQty: z.coerce.number().int().min(0).optional(),
+  price: z.coerce.number().min(0).optional(),
+  categoryId: z.string().nullable().optional(),
   channel: z.string().optional(),
+  unit: z.string().optional(),
 });
 
 export type ProductInput = z.infer<typeof productSchema>;

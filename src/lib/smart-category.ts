@@ -97,7 +97,7 @@ export function guessCategory(name: string): string {
 
 
 /**
- * 标准化店内码
+ * 标准化货品编码
  * 处理 B3 -> B03, C1 -> C01 等情况
  */
 export function normalizeProductCode(code: string): string {

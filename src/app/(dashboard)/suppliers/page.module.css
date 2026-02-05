@@ -18,58 +18,62 @@
 }
 
 .title {
-  font-size: 2.25rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-dim) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  line-height: 1.1;
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: var(--color-text);
+  line-height: 1;
 }
 
 .subtitle {
   font-size: 0.9375rem;
   color: var(--color-text-dim);
-  font-weight: 500;
+  font-weight: 600;
   margin-top: 0.5rem;
 }
 
-/* Search & Filters */
+.headerActions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Search & Filters Glassmorphism */
 .filters {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--color-bg-card);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 1.25rem;
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
 }
 
 .searchBox {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: 1rem;
   flex: 1;
   max-width: 520px;
-  height: var(--input-height, 48px);
-  background: var(--color-bg-alt);
-  padding: 0 1rem;
-  border-radius: 12px;
+  height: 52px;
+  background: var(--color-bg-card);
+  padding: 0 1.25rem;
+  border-radius: 14px;
   border: 1px solid var(--color-border);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .searchBox:focus-within {
   border-color: var(--color-primary);
-  background: var(--color-bg-card);
   box-shadow: 0 0 0 4px var(--color-primary-soft);
+  transform: translateY(-1px);
 }
 
 .searchIcon {
-  color: var(--color-text-dim);
-  opacity: 0.8;
+  color: var(--color-primary);
+  opacity: 0.6;
 }
 
 input.searchInput {
@@ -87,32 +91,43 @@ input.searchInput {
 /* Supplier Grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 1.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 2rem;
 }
 
 .card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
-  padding: 2rem;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 2.25rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
   position: relative;
   overflow: hidden;
 }
 
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: var(--color-primary);
+  transition: height 0.3s ease;
+}
+
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   border-color: var(--color-primary-soft-bold);
 }
 
-.card:hover .supplierName {
-  color: var(--color-primary);
+.card:hover::before {
+  height: 100%;
 }
 
 .cardHeader {
@@ -122,59 +137,64 @@ input.searchInput {
 }
 
 .supplierName {
-  font-size: 1.25rem;
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--color-text);
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.5rem;
   transition: color 0.2s ease;
   letter-spacing: -0.02em;
 }
 
 .typeBadge {
   display: inline-flex;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 800;
-  padding: 0.25rem 0.625rem;
-  border-radius: 6px;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
   background: var(--color-bg-alt);
   color: var(--color-text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   border: 1px solid var(--color-border-subtle);
 }
+
+/* Channel specific badges */
+.badge1688 { background: rgba(255, 103, 0, 0.1); color: #ff6700; border-color: rgba(255, 103, 0, 0.2); }
+.badgePdd { background: rgba(224, 44, 36, 0.1); color: #e02c24; border-color: rgba(224, 44, 36, 0.2); }
+.badgeTaobao { background: rgba(255, 80, 0, 0.1); color: #ff5000; border-color: rgba(255, 80, 0, 0.2); }
+.badgeWx { background: rgba(7, 193, 96, 0.1); color: #07c160; border-color: rgba(7, 193, 96, 0.2); }
 
 .contactInfo {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.125rem;
+  background: var(--color-bg-alt);
+  padding: 1.25rem;
+  border-radius: 16px;
 }
 
 .infoLine {
   display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.875rem;
   font-size: 0.875rem;
   color: var(--color-text);
-  line-height: 1.4;
 }
 
 .infoLine svg {
-  margin-top: 0.125rem;
   color: var(--color-primary);
-  opacity: 0.7;
+  opacity: 0.8;
   flex-shrink: 0;
 }
 
 .infoLine b {
   color: var(--color-text-dim);
   font-weight: 700;
-  margin-right: 0.25rem;
+  min-width: 4rem;
 }
 
 .cardFooter {
   margin-top: auto;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-border-subtle);
   display: flex;
   justify-content: flex-end;
 }
@@ -182,15 +202,21 @@ input.searchInput {
 .editBtn {
   font-size: 0.875rem;
   color: var(--color-primary);
-  font-weight: 700;
+  font-weight: 800;
   text-decoration: none;
   transition: all 0.2s ease;
-  padding: 0.375rem 0.75rem;
-  border-radius: 8px;
+  padding: 0.625rem 1.25rem;
+  border-radius: 12px;
+  background: var(--color-primary-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .editBtn:hover {
-  background: var(--color-primary-soft);
+  background: var(--color-primary);
+  color: #fff;
+  transform: translateY(-2px);
 }
 
 @keyframes pageIn {
@@ -199,7 +225,8 @@ input.searchInput {
 }
 
 @media (max-width: 768px) {
-  .header { flex-direction: column; align-items: stretch; gap: 1rem; }
-  .filters { padding: 1rem; }
+  .header { flex-direction: column; align-items: stretch; gap: 1.25rem; }
+  .filters { padding: 1rem; flex-direction: column; gap: 1rem; }
+  .searchBox { max-width: none; }
   .grid { grid-template-columns: 1fr; }
 }

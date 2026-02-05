@@ -24,6 +24,8 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     remark: '',
     channel: '',
     minOrderQty: 0,
+    unit: '件',
+    price: 0,
   });
 
   const [images, setImages] = useState<string[]>([]);
@@ -47,6 +49,8 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             remark: p.remark || '',
             channel: p.channel || '',
             minOrderQty: p.minOrderQty || 0,
+            unit: p.unit || '件',
+            price: p.price || 0,
           });
           setImages(p.images || []);
         } else {
@@ -126,30 +130,41 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     }
   };
 
-  if (loading) return <div className={styles.loading}>正在加载货品信息...</div>;
+  const unitOptions = [
+    { label: '个', value: '个' },
+    { label: '件', value: '件' },
+    { label: '套', value: '套' },
+    { label: '盒', value: '盒' },
+    { label: '罐', value: '罐' },
+    { label: '包', value: '包' },
+    { label: '公斤', value: '公斤' },
+    { label: '米', value: '米' },
+  ];
+
+  if (loading) return null;
 
   return (
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.titleGroup}>
           <Link href={`/products/${id}`} className={styles.backLink}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            取消修改
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            中止编辑
           </Link>
           <h1 className={styles.title}>修改货品资料</h1>
-          <p className={styles.subtitle}>当前编辑: <span style={{ color: 'var(--color-primary)' }}>{formData.code}</span></p>
+          <p className={styles.subtitle}>正在同步更新货品: <span style={{ color: 'var(--color-primary)', fontWeight: 700 }}>{formData.code}</span></p>
         </div>
       </header>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-            基础信息核心
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            核心档案信息
           </h2>
           <div className={styles.grid}>
             <div className={styles.field}>
-              <label className={styles.label}>店内码 *</label>
+              <label className={styles.label}>货品编码 (SKU) *</label>
               <input 
                 name="code"
                 className={styles.input}
@@ -178,7 +193,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>规格参数</label>
+              <label className={styles.label}>规格参数说明</label>
               <input 
                 name="spec"
                 className={styles.input}
@@ -188,12 +203,12 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>首选采销渠道</label>
+              <label className={styles.label}>合作/采销渠道</label>
               <CustomSelect
                 value={formData.channel}
                 onChange={(val) => setFormData({ ...formData, channel: String(val) })}
                 options={suppliers.map(s => ({ label: s.name, value: s.name }))}
-                placeholder="供应商名称或渠道"
+                placeholder="选择关联的渠道供应商"
                 footer={
                   <div 
                     onClick={(e) => {
@@ -205,8 +220,9 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                       fontSize: '0.8125rem', 
                       fontWeight: 700,
                       textAlign: 'center',
-                      padding: '4px 0',
-                      cursor: 'pointer'
+                      padding: '0.5rem 0',
+                      cursor: 'pointer',
+                      background: 'rgba(var(--color-primary-rgb), 0.05)'
                     }}
                   >
                     + 新增/管理供应商
@@ -214,12 +230,47 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 }
               />
             </div>
+            <div className={styles.field}>
+              <label className={styles.label}>参考进货价格 (¥)</label>
+              <input 
+                type="number"
+                name="price"
+                step="0.01"
+                min="0"
+                className={styles.input}
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="0.00"
+              />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>建议起订量 (MOQ) *</label>
+              <div className={styles.qtyUnitGroup}>
+                <input 
+                  type="number"
+                  name="minOrderQty"
+                  min="0"
+                  className={`${styles.input} ${styles.qtyInput}`}
+                  value={formData.minOrderQty}
+                  onChange={handleChange}
+                  placeholder="1"
+                />
+                <div className={styles.unitSelector}>
+                  <CustomSelect
+                    value={formData.unit}
+                    onChange={(val) => setFormData(prev => ({ ...prev, unit: String(val) }))}
+                    options={unitOptions}
+                    placeholder="单位"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             视觉图库管理
           </h2>
           <div className={styles.imageGrid}>
@@ -240,33 +291,37 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
                 </button>
               </div>
             ))}
-            {isUploading ? (
-              <div className={styles.uploadBtn}>
-                <div className={styles.uploadIcon} style={{ animation: 'spin 1s linear infinite' }}>⌛</div>
-                <span className={styles.uploadText}>正在同步...</span>
-              </div>
-            ) : (
-              <div className={styles.uploadBtn} onClick={() => fileInputRef.current?.click()}>
-                <div className={styles.uploadIcon}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </div>
-                <span className={styles.uploadText}>添加图片</span>
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  onChange={handleImageUpload} 
-                  multiple 
-                  accept="image/*"
-                  hidden
-                />
-              </div>
-            )}
+            <div className={styles.uploadBtn} onClick={() => !isUploading && fileInputRef.current?.click()}>
+              {isUploading ? (
+                <>
+                  <div className={styles.uploadIcon} style={{ animation: 'spin 1s linear infinite' }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                  </div>
+                  <span className={styles.uploadText}>上传中...</span>
+                </>
+              ) : (
+                <>
+                  <div className={styles.uploadIcon}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </div>
+                  <span className={styles.uploadText}>添加实拍图</span>
+                </>
+              )}
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleImageUpload} 
+                multiple 
+                accept="image/*"
+                hidden
+              />
+            </div>
           </div>
         </section>
 
         <section className={styles.section}>
            <h2 className={styles.sectionTitle}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
               业务备注说明
            </h2>
            <textarea 
@@ -280,12 +335,24 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
         <div className={styles.formActions}>
           <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
-            {isSubmitting ? '正在同步数据...' : '确认并提交修改'}
+            {isSubmitting ? (
+              <>
+                <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                正在同步云端...
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                确认并提交更新
+              </>
+            )}
           </button>
-          <Link href={`/products/${id}`} className={styles.cancelBtn}>放弃本次更改</Link>
+          <Link href={`/products/${id}`} className={styles.cancelBtn}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            中止并放弃修改
+          </Link>
         </div>
       </form>
-
     </div>
   );
 }

@@ -3,7 +3,9 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-  max-width: 1000px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 4rem;
 }
 
 .header {
@@ -35,15 +37,18 @@
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 800;
   letter-spacing: -0.04em;
   color: var(--color-text);
+  line-height: 1.1;
 }
 
 .subtitle {
   font-size: 0.9375rem;
   color: var(--color-text-dim);
+  font-weight: 500;
+  margin-top: 0.25rem;
 }
 
 .form {
@@ -55,9 +60,9 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
   background: var(--color-bg-card);
-  padding: 2rem;
+  padding: 2.25rem;
   border-radius: var(--radius-2xl);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
@@ -70,20 +75,24 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding-bottom: 1rem;
+  padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.sectionTitle svg {
+  color: var(--color-primary);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.625rem;
 }
 
 .fieldFull {
@@ -99,95 +108,76 @@
 }
 
 .input, .textarea {
-  /* Inherit from global */
+  width: 100%;
+  padding: 0 1.25rem;
+  height: 52px;
+  border-radius: 14px;
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
   transition: all 0.2s ease;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-alt);
+}
+
+.textarea {
+  padding: 1.125rem 1.25rem;
+  min-height: 140px;
+  height: auto;
+  resize: vertical;
+  line-height: 1.6;
 }
 
 .input:focus, .textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  background: var(--color-bg-card);
+  background: #fff;
   box-shadow: 0 0 0 4px var(--color-primary-soft);
 }
 
-/* Custom Dropdown Styles */
-.selectWrapper {
-  position: relative;
+/* Grouped Input for Qty + Unit */
+.qtyUnitGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   width: 100%;
 }
 
-.selectTrigger {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
+.qtyInput {
+  flex: 3;
 }
 
-.selectTriggerOpen {
-  border-color: var(--color-primary);
-  background: var(--color-bg-card);
+.unitSelector {
+  flex: 2;
+  min-width: 100px;
 }
 
-.dropdownMenu {
-  position: absolute;
-  top: calc(100% + 5px);
-  left: 0;
-  right: 0;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  box-shadow: var(--shadow-lg);
-  z-index: 100;
-  max-height: 300px;
-  overflow-y: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+/* 移除数字输入框的加减器 */
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-.dropdownMenu::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+.input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
-.dropdownOption {
-  padding: 0.875rem 1rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--color-text);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: all 0.2s ease;
-}
-
-.dropdownOption:hover {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-}
-
-.dropdownOptionActive {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-}
-
-.dropdownDivider {
-  height: 1px;
-  background: var(--color-border);
-  margin: 0.5rem 1rem;
-  opacity: 0.5;
-}
-
+/* Custom Dropdown Additions */
 .addOption {
+  display: block;
+  text-decoration: none;
   color: var(--color-primary);
   font-weight: 700;
+  transition: background 0.2s ease;
 }
 
-.textarea {
-  min-height: 120px;
-  resize: vertical;
+.addOption:hover {
+  background: var(--color-primary-soft);
 }
 
-/* Image Upload Styles */
+/* Image Grid Overhaul */
 .imageGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -197,10 +187,18 @@
 .imageItem {
   position: relative;
   aspect-ratio: 1;
-  border-radius: var(--radius-xl);
+  border-radius: 20px;
   overflow: hidden;
   border: 1px solid var(--color-border);
   background: #fff;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.imageItem:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-soft-bold);
 }
 
 .previewImg {
@@ -213,11 +211,12 @@
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #fff;
   display: flex;
   align-items: center;
@@ -225,6 +224,14 @@
   cursor: pointer;
   border: none;
   transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateY(-4px);
+  z-index: 10;
+}
+
+.imageItem:hover .removeBtn {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .removeBtn:hover {
@@ -235,14 +242,14 @@
 .uploadBtn {
   aspect-ratio: 1;
   border: 2px dashed var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
   background: var(--color-bg-alt);
   color: var(--color-text-dim);
 }
@@ -251,38 +258,95 @@
   border-color: var(--color-primary);
   color: var(--color-primary);
   background: var(--color-primary-soft);
+  transform: scale(0.97);
 }
 
 .uploadIcon {
-  font-size: 2rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.uploadBtn:hover .uploadIcon {
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .uploadText {
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 /* Actions */
 .formActions {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   padding-top: 1rem;
 }
 
-.formActions button, .formActions a {
-  height: 54px;
-  border-radius: 14px;
-  font-weight: 700;
+.submitBtn {
+  composes: btn from global;
+  height: 56px;
+  border-radius: 18px;
+  font-weight: 800;
+  flex: 2;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #4f46e5 100%);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
+  cursor: pointer;
 }
 
-.submitBtn {
-  flex: 2;
+.submitBtn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.1);
+  box-shadow: 0 12px 32px rgba(79, 70, 229, 0.35);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
 }
 
 .cancelBtn {
+  composes: btn from global;
+  height: 56px;
+  border-radius: 18px;
+  font-weight: 700;
   flex: 1;
+  background: #fff;
+  color: var(--color-text-dim);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.cancelBtn:hover {
+  background: var(--color-bg-alt);
+  color: var(--color-text);
+  border-color: var(--color-text-dim);
+  transform: translateY(-2px);
 }
 
 @keyframes pageIn {
@@ -290,14 +354,9 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 640px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-  .fieldFull {
-    grid-column: span 1;
-  }
-  .formActions {
-    flex-direction: column;
-  }
+@media (max-width: 768px) {
+  .page { padding: 0 1rem 4rem; }
+  .grid { grid-template-columns: 1fr; }
+  .fieldFull { grid-column: span 1; }
+  .formActions { flex-direction: column; }
 }

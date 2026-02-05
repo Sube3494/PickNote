@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       
       // 只映射需要的列
       const name = row.getCell(1).text?.toString().trim() || ''; // 商品名称 (A列)
-      const codeRaw = row.getCell(3).text?.toString().trim() || ''; // 店内码 (C列)
+      const codeRaw = row.getCell(3).text?.toString().trim() || ''; // 货品编码 (C列)
 
       // 跳过完全空的行
       if (!name && !codeRaw) continue;

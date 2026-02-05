@@ -83,7 +83,7 @@ export default function ImportPage() {
       <header className={styles.header}>
         <div className={styles.titleGroup}>
           <Link href="/products" className={styles.backLink}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             返回货品信息
           </Link>
           <h1 className={styles.title}>批量导入货品</h1>
@@ -108,7 +108,7 @@ export default function ImportPage() {
             />
             
             <div className={styles.uploadIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             </div>
             
             <div className={styles.uploadText}>
@@ -128,18 +128,19 @@ export default function ImportPage() {
 
           {message && (
             <div className={`${styles.message} ${styles[message.type]}`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 {message.type === 'success' ? (
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <>
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </>
                 ) : (
-                  <circle cx="12" cy="12" r="10"></circle>
+                  <>
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </>
                 )}
-                {message.type === 'success' ? (
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                ) : (
-                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                )}
-                {message.type === 'error' && <line x1="12" y1="16" x2="12.01" y2="16"></line>}
               </svg>
               {message.text}
             </div>
@@ -151,12 +152,20 @@ export default function ImportPage() {
               disabled={!file || isUploading}
               onClick={handleUpload}
             >
-              {isUploading ? '正在深度同步数据...' : '立即启动智能导入'}
+              {isUploading ? (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                  正在深度同步数据...
+                </span>
+              ) : '立即启动智能导入'}
             </button>
             {file && !isUploading && (
               <button 
                 className={`btn btn-secondary ${styles.resetBtn}`}
-                onClick={() => setFile(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFile(null);
+                }}
               >
                 重置
               </button>
@@ -174,12 +183,12 @@ export default function ImportPage() {
         </div>
 
         <section className={styles.guide}>
-          <h2 className={styles.guideTitle}>导入注意事项</h2>
+          <h3 className={styles.guideTitle}>导入注意事项</h3>
           <ul className={styles.guideList}>
-             <li>1. 系统会自动处理 <b>B3 -&gt; B03</b> 这种店内码不规范问题。</li>
+             <li>1. <b>规范纠错</b>：系统会自动处理 <b>B3 -&gt; B03</b> 这种货品编码不规范问题。</li>
              <li>2. <b>品类智能识别</b>：系统将根据名称关键词（如“茶叶”、“盲盒”）自动归类。</li>
-             <li>3. <b>图片要求</b>：图片需通过 Excel 的“嵌入到单元格”方式插入，且位于 <b>B 列</b>。</li>
-             <li>4. <b>增量更新</b>：如果编码已存在，系统将更新商品资料而不会新建重复记录。</li>
+             <li>3. <b>图片嵌入规范</b>：图片需通过 Excel 的“嵌入到单元格”方式插入，且位于 <b>B 列</b>。</li>
+             <li>4. <b>增量/覆盖更新</b>：如果编码已存在，系统将更新商品资料而不会新建重复记录。</li>
           </ul>
         </section>
       </div>

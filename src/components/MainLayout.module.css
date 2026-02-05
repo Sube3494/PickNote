@@ -13,13 +13,39 @@
 
 .content {
   flex: 1;
-  padding: 2rem;
-  /* Add margin top if Header is fixed, but Header is sticky inside main */
+  padding: 2.5rem 2rem;
 }
 
 .container {
   max-width: 1400px;
   margin: 0 auto;
+}
+
+.mobileToggle {
+  display: none;
+  position: fixed;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 90;
+  width: 48px;
+  height: 48px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  color: var(--color-text);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s var(--ease-spring);
+}
+
+.mobileToggle:hover {
+  transform: scale(1.05);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 @media (max-width: 768px) {
@@ -28,5 +54,9 @@
   }
   .content {
     padding: 1.5rem 1rem;
+    padding-top: 5rem; /* Space for the floating button */
+  }
+  .mobileToggle {
+    display: flex;
   }
 }

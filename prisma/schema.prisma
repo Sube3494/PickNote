@@ -43,6 +43,8 @@ model Product {
   remark       String?        // 备注
   currentStock Int            @default(0) // 当前库存
   minOrderQty  Int            @default(0) // 最小起订量
+  unit         String?        @default("件") // 最小起订量单位
+  price        Float          @default(0) // 进货单价(参考价)
   channel      String?        // 采购渠道说明
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt

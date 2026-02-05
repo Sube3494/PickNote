@@ -86,10 +86,11 @@
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-alt);
   font-size: 0.9375rem;
   transition: var(--transition);
+  /* Use global border/background to avoid doubling */
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-alt);
 }
 
 .input:focus, .textarea:focus {
@@ -163,39 +164,6 @@
   background: var(--color-error-soft);
 }
 
-/* Search Box */
-.searchContainer {
-  position: relative;
-  margin-top: 1rem;
-}
-
-.searchList {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  z-index: 10;
-  max-height: 300px;
-  overflow-y: auto;
-  margin-top: 0.25rem;
-}
-
-.searchItem {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: var(--transition);
-}
-
-.searchItem:hover {
-  background: var(--color-bg-alt);
-}
 
 .addItemBtn {
   width: 100%;
@@ -300,4 +268,15 @@
   .form {
     grid-template-columns: 1fr;
   }
+}
+
+/* Hide Spin Buttons */
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type='number'] {
+  -moz-appearance: textfield;
 }

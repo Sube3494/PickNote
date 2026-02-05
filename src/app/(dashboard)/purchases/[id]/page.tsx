@@ -4,6 +4,7 @@ import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ToastContext';
+import Modal from '@/components/Modal';
 import styles from './page.module.css';
 
 interface PurchaseItem {
@@ -42,6 +43,7 @@ export default function PurchaseDetailPage({ params }: { params: Promise<{ id: s
   const { showToast } = useToast();
   const [purchase, setPurchase] = useState<Purchase | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     fetch(`/api/purchases/${id}`)
@@ -59,8 +61,6 @@ export default function PurchaseDetailPage({ params }: { params: Promise<{ id: s
   }, [id, router, showToast]);
 
   const handleDelete = async () => {
-    if (!confirm('确定要作废并删除这笔进货单吗？该操作不可撤销，且系统将自动扣减已增加的关联货品库存。')) return;
-
     try {
       const res = await fetch(`/api/purchases/${id}`, { method: 'DELETE' });
       const result = await res.json();
@@ -72,6 +72,8 @@ export default function PurchaseDetailPage({ params }: { params: Promise<{ id: s
       }
     } catch {
       showToast('网络请求失败', 'error');
+    } finally {
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -175,13 +177,23 @@ export default function PurchaseDetailPage({ params }: { params: Promise<{ id: s
             </div>
 
             <div className={styles.dangerActions}>
-               <button onClick={handleDelete} className={styles.deleteBtn}>
+               <button onClick={() => setShowDeleteConfirm(true)} className={styles.deleteBtn}>
                  作废此进货单
                </button>
             </div>
           </section>
         </aside>
       </div>
+
+      <Modal
+        isOpen={showDeleteConfirm}
+        title="确认作废单据"
+        message="确定要作废并删除这笔进货单吗？该操作不可撤销，且系统将自动扣减已增加的关联货品库存。"
+        confirmText="确认删除"
+        type="danger"
+        onConfirm={handleDelete}
+        onClose={() => setShowDeleteConfirm(false)}
+      />
     </div>
   );
 }
