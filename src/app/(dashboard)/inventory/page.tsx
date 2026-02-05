@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './page.module.css';
 
 interface Product {
@@ -12,6 +13,9 @@ interface Product {
   currentStock: number;
   spec?: string;
   minOrderQty: number;
+  unit?: string;
+  images: string[];
+  price?: number;
 }
 
 export default function InventoryPage() {
@@ -47,6 +51,11 @@ export default function InventoryPage() {
     return true;
   });
 
+  const totalStock = products.reduce((sum, p) => sum + p.currentStock, 0);
+  const totalValue = products.reduce((sum, p) => sum + (p.currentStock * (p.price || 0)), 0);
+  const lowStockCount = products.filter(p => p.currentStock > 0 && p.currentStock <= 5).length;
+  const outOfStockCount = products.filter(p => p.currentStock <= 0).length;
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -58,19 +67,18 @@ export default function InventoryPage() {
 
       <div className={styles.statsGrid}>
         <div className={`${styles.statCard} ${styles.total}`}>
-          <div className={styles.statLabel}>总库存货值项</div>
-          <div className={styles.statValue}>{products.length}</div>
+          <div className={styles.statLabel}>当前总库存 (件)</div>
+          <div className={styles.statValue}>{totalStock.toLocaleString()}</div>
+        </div>
+        <div className={`${styles.statCard} ${styles.value}`}>
+          <div className={styles.statLabel}>库存总货值 (元)</div>
+          <div className={styles.statValue}>¥{totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
         <div className={`${styles.statCard} ${styles.warning}`}>
-          <div className={styles.statLabel}>库存紧张 (≤5)</div>
+          <div className={styles.statLabel}>需要补拥 (≤5)</div>
           <div className={styles.statValue}>
-            {products.filter(p => p.currentStock > 0 && p.currentStock <= 5).length}
-          </div>
-        </div>
-        <div className={`${styles.statCard} ${styles.danger}`}>
-          <div className={styles.statLabel}>已断货</div>
-          <div className={styles.statValue}>
-            {products.filter(p => p.currentStock <= 0).length}
+            {lowStockCount + outOfStockCount}
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-dim)', marginLeft: '0.5rem' }}>项</span>
           </div>
         </div>
       </div>
@@ -108,54 +116,61 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>货品资料</th>
-              <th>所属分类</th>
-              <th>当前库存 (件)</th>
-              <th>库存状态</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan={5} style={{ textAlign: 'center', padding: '4rem' }}>数据装载中...</td></tr>
-            ) : filteredProducts.length === 0 ? (
-              <tr><td colSpan={5} style={{ textAlign: 'center', padding: '4rem' }}>未找到匹配库位</td></tr>
-            ) : (
-              filteredProducts.map(product => (
-                <tr key={product.id}>
-                  <td>
-                    <div className={styles.productInfo}>
-                      <span className={styles.pName}>{product.name}</span>
-                      <span className={styles.pCode}>{product.code}</span>
-                    </div>
-                  </td>
-                  <td>{product.category}</td>
-                  <td>
-                    <span className={styles.stockCount}>{product.currentStock}</span>
-                  </td>
-                  <td>
-                    {product.currentStock <= 0 ? (
-                      <span className={`${styles.statusBadge} ${styles.outOfStock}`}>告急 / 断货</span>
-                    ) : product.currentStock <= 5 ? (
-                      <span className={`${styles.statusBadge} ${styles.lowStock}`}>低水位预警</span>
-                    ) : (
-                      <span className={`${styles.statusBadge} ${styles.normalStock}`}>量能充沛</span>
-                    )}
-                  </td>
-                  <td>
-                    <Link href={`/products/${product.id}`} className={styles.viewBtn}>
-                      明细追溯
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className={styles.cardGrid}>
+        {loading ? (
+           <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '4rem', color: 'var(--color-text-dim)'}}>
+             数据装载中...
+           </div>
+        ) : filteredProducts.length === 0 ? (
+          <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '4rem', background: 'var(--color-bg-card)', borderRadius: '24px', border: '1px solid var(--color-border)'}}>
+            <h3 style={{fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem'}}>未找到相关库存</h3>
+            <p style={{color: 'var(--color-text-dim)'}}>请尝试调整筛选条件或搜索关键词</p>
+          </div>
+        ) : (
+          filteredProducts.map(product => {
+            const isOut = product.currentStock <= 0;
+            const isLow = !isOut && product.currentStock <= 5;
+            
+            return (
+              <div key={product.id} className={styles.invCard}>
+                <div className={styles.invImgWrapper}>
+                  {product.images && product.images.length > 0 ? (
+                    <Image 
+                      src={product.images[0]} 
+                      alt={product.name} 
+                      fill
+                      sizes="(max-width: 768px) 50vw, 20vw"
+                      className={styles.invImg}
+                    />
+                  ) : (
+                     <div className={styles.invNoImg}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                     </div>
+                  )}
+                </div>
+
+                <div className={styles.cardHeader}>
+                  <div className={styles.productMeta}>
+                    <span className={styles.pCode}>{product.code}</span>
+                    <h3 className={styles.pName} title={product.name}>{product.name}</h3>
+                  </div>
+                </div>
+
+                <div className={styles.cardFooter}>
+                  <div className={`${styles.stockBadge} ${isOut ? styles.statusOut : isLow ? styles.statusLow : styles.statusNormal}`}>
+                    <span className={styles.statusDot}></span>
+                    {product.currentStock} {product.unit || '件'}
+                  </div>
+
+                  <Link href={`/products/${product.id}`} className={styles.viewBtn}>
+                    查看
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </Link>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

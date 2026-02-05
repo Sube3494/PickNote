@@ -35,12 +35,16 @@ const Icons = {
   ),
   Categories: () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+  ),
+  Clipboard: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
   )
 };
 
 const navItems = [
   { label: '控制台', href: '/', Icon: Icons.Dashboard },
   { label: '货品信息', href: '/products', Icon: Icons.Products },
+  { label: '库存核心', href: '/inventory', Icon: Icons.Clipboard },
   { label: '供应商管理', href: '/suppliers', Icon: Icons.Suppliers },
   { label: '进货记录管理', href: '/purchases', Icon: Icons.Purchases },
   { label: '品类管理', href: '/categories', Icon: Icons.Categories },

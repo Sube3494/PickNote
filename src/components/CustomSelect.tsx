@@ -17,6 +17,7 @@ interface CustomSelectProps {
   disabled?: boolean;
   className?: string;
   footer?: React.ReactNode;
+  variant?: 'default' | 'ghost';
 }
 
 export function CustomSelect({
@@ -27,6 +28,7 @@ export function CustomSelect({
   disabled = false,
   className = '',
   footer,
+  variant = 'default',
 }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -66,7 +68,7 @@ export function CustomSelect({
       ref={containerRef}
     >
       <div
-        className={`${styles.trigger} ${isOpen ? styles.triggerOpen : ''}`}
+        className={`${styles.trigger} ${variant === 'ghost' ? styles.triggerGhost : ''} ${isOpen ? styles.triggerOpen : ''}`}
         onClick={toggleOpen}
       >
         <span className={`${!selectedOption ? styles.placeholder : ''}`}>

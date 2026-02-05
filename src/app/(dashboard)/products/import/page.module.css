@@ -1,8 +1,12 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2rem;
   animation: pageIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
 }
 
 .header {
@@ -31,10 +35,11 @@
 }
 
 .title {
-  font-size: 2.25rem;
-  font-weight: 950;
-  letter-spacing: -0.04em;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--color-text);
+  line-height: 1.1;
 }
 
 .subtitle {
@@ -91,7 +96,7 @@
 .hasFile {
   border-style: solid;
   border-color: var(--color-primary);
-  background: #fff;
+  background: var(--color-bg-card);
   border-width: 1px;
   box-shadow: var(--shadow-premium);
 }

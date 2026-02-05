@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from '@/components/ToastContext';
 import styles from './page.module.css';
 
@@ -13,6 +13,9 @@ export default function ImportPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const from = searchParams.get('from');
+  const backUrl = from === 'dashboard' ? '/' : '/products';
   const { showToast } = useToast();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +56,7 @@ export default function ImportPage() {
         setMessage({ type: 'success', text: data.message });
         // Redirect after success
         setTimeout(() => {
-          router.push('/products');
+          router.push(backUrl);
         }, 2000);
       } else {
         const errorMsg = data.message || '导入失败，请检查文件格式';
@@ -82,7 +85,7 @@ export default function ImportPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.titleGroup}>
-          <Link href="/products" className={styles.backLink}>
+          <Link href={backUrl} className={styles.backLink}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             返回货品信息
           </Link>

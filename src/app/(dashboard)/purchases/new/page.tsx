@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastContext';
 import { CustomSelect } from '@/components/CustomSelect';
@@ -16,8 +16,9 @@ interface Supplier {
 
 interface Product {
   id: string;
-  code: string;
+  code: string | null;
   name: string;
+  price: number;
 }
 
 interface PurchaseItem {
@@ -30,6 +31,9 @@ interface PurchaseItem {
 
 export default function NewPurchasePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const from = searchParams.get('from');
+  const backUrl = from === 'dashboard' ? '/' : '/purchases';
   const { showToast } = useToast();
   
   // Form State
@@ -103,7 +107,7 @@ export default function NewPurchasePage() {
       const result = await res.json();
       if (result.success) {
         showToast('进货单保存成功', 'success');
-        router.push('/purchases');
+        router.push(backUrl);
       } else {
         showToast(result.message || '保存失败', 'error');
       }
@@ -117,7 +121,7 @@ export default function NewPurchasePage() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <Link href="/purchases" className={styles.backLink}>
+        <Link href={backUrl} className={styles.backLink}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
           返回进货列表
         </Link>
@@ -261,7 +265,7 @@ export default function NewPurchasePage() {
               >
                 {isSubmitting ? '保存中...' : '确认并创建进货单'}
               </button>
-              <Link href="/purchases" className={styles.cancelBtn}>取消并返回</Link>
+              <Link href={backUrl} className={styles.cancelBtn}>取消并返回</Link>
             </div>
           </div>
         </aside>

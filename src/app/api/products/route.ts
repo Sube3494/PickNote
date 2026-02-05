@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+// Revalidate cache
 // Force reload after prisma fix
 import { prisma } from '@/lib/db';
 import { Prisma } from '@prisma/client';
@@ -28,20 +29,45 @@ export async function GET(request: Request) {
       ];
     }
     
-    // 1. 获取所有符合条件的 code 和 id，用于在内存中进行自然排序
+    // 1. 获取所有符合条件的 code, name 和 id，用于在内存中进行自然排序和精确过滤
     const allProducts = await prisma.product.findMany({
       where,
-      select: { id: true, code: true },
+      select: { id: true, code: true, name: true, currentStock: true, price: true },
     });
 
-    // 2. 自然排序逻辑 (1, 2, ..., 10, 100)
-    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-    allProducts.sort((a, b) => collator.compare(a.code, b.code));
-
-    const total = allProducts.length;
+    // 2. 精确过滤逻辑 (Search Scope)
+    let filteredProducts = allProducts;
     
-    // 3. 内存分页: 截取当前页对应的 ID 列表
-    const pagedIds = allProducts.slice(skip, skip + limit).map(p => p.id);
+    // 搜索范围筛选
+    const scope = searchParams.get('scope') || 'all'; // 'all', 'code', 'name'
+
+    if (search) {
+      const searchStr = search.trim();
+      const escapedSearch = searchStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      
+      // 智能编码匹配正则
+      const codeRegex = new RegExp(`(^|\\D)0*${escapedSearch}$`, 'i');
+      
+      filteredProducts = filteredProducts.filter(p => {
+        const matchName = p.name.toLowerCase().includes(searchStr.toLowerCase());
+        const matchCode = p.code && codeRegex.test(p.code);
+
+        if (scope === 'code') return matchCode;
+        if (scope === 'name') return matchName;
+        
+        // 综合搜索 (默认)
+        return matchName || matchCode;
+      });
+    }
+
+    // 3. 自然排序逻辑 (1, 2, ..., 10, 100)
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    filteredProducts.sort((a, b) => collator.compare(a.code, b.code));
+
+    const total = filteredProducts.length;
+    
+    // 4. 内存分页: 截取当前页对应的 ID 列表
+    const pagedIds = filteredProducts.slice(skip, skip + limit).map(p => p.id);
 
     // 4. 根据排序后的 ID 列表获取完整数据
     const products = pagedIds.length > 0 

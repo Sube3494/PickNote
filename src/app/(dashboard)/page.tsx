@@ -110,7 +110,7 @@ export default function Home() {
             <span className={styles.statValue}>{loading ? '...' : stats.totalProducts}</span>
           </div>
           <div className={styles.snapshotItem}>
-            <span className={styles.statLabel}>活跃供应商</span>
+            <span className={styles.statLabel}>供应商</span>
             <span className={styles.statValue}>{loading ? '...' : stats.totalSuppliers}</span>
           </div>
           <div className={styles.snapshotItem}>
@@ -127,19 +127,19 @@ export default function Home() {
         <div className={styles.toolBox}>
           <h3 className={styles.toolTitle}>核心作业</h3>
           <div className={styles.toolGrid}>
-            <Link href="/products/new" className={styles.toolBtn}>
+            <Link href="/products/new?from=dashboard" className={styles.toolBtn}>
               <div className={styles.toolIcon}><DashboardIcons.Add /></div>
               <span>录入全新货品</span>
             </Link>
-            <Link href="/products/import" className={styles.toolBtn}>
+            <Link href="/products/import?from=dashboard" className={styles.toolBtn}>
               <div className={styles.toolIcon}><DashboardIcons.Import /></div>
               <span>大类批量导入</span>
             </Link>
-            <Link href="/purchases/new" className={styles.toolBtn}>
+            <Link href="/purchases/new?from=dashboard" className={styles.toolBtn}>
               <div className={styles.toolIcon}><DashboardIcons.Purchase /></div>
               <span>采购入库登记</span>
             </Link>
-            <Link href="/settings" className={styles.toolBtn}>
+            <Link href="/settings?from=dashboard" className={styles.toolBtn}>
               <div className={styles.toolIcon}><DashboardIcons.Settings /></div>
               <span>系统参数配置</span>
             </Link>

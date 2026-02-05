@@ -6,17 +6,76 @@
   animation: pageIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1.5rem;
+  text-align: center;
+  animation: pageIn 0.4s ease-out;
+}
+
+.emptyIcon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--color-bg-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-dim);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 0.5rem;
+}
+
+.emptyState h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.emptyState p {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.emptyReset {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.emptyReset:hover {
+  background: var(--color-primary-soft);
+  text-decoration: none;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-top: 1.5rem;
   padding-bottom: 0.5rem;
 }
 
@@ -29,7 +88,7 @@
 .title {
   font-size: 2rem;
   font-weight: 800;
-  letter-spacing: var(--tracking-tighter);
+  letter-spacing: -0.03em;
   color: var(--color-text);
   line-height: 1.1;
 }
@@ -56,11 +115,9 @@
    ============================================================ */
 
 .primaryBtn {
-  composes: btn btn-primary from global;
 }
 
 .secondaryBtn {
-  composes: btn btn-secondary from global;
 }
 
 /* ============================================================
@@ -84,16 +141,35 @@
   align-items: center;
   background: var(--color-bg-alt);
   border-radius: 12px;
-  padding: 0 1rem;
   height: var(--input-height, 48px);
   border: 1px solid var(--color-border);
   transition: all 0.2s ease;
+  /* overflow: hidden; Removed to allow dropdown to overflow */
 }
 
 .searchBar:focus-within {
   background: var(--color-bg-card);
   border-color: var(--color-primary);
   box-shadow: 0 0 0 4px var(--color-primary-soft);
+}
+
+/* Scope Selector Container */
+.searchScope {
+  flex-shrink: 0;
+  width: 120px;
+  height: 100%;
+  border-right: 1px solid var(--color-border); /* Proper separator */
+  display: flex;
+  align-items: center;
+}
+
+/* Search Input Container */
+.searchInputWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  height: 100%;
 }
 
 .searchIcon {
@@ -113,6 +189,7 @@ input.searchInput {
   outline: none;
   height: 100%;
   padding: 0;
+  min-width: 0;
 }
 
 .searchClear {
@@ -126,6 +203,8 @@ input.searchInput {
   justify-content: center;
   color: var(--color-text-dim);
   cursor: pointer;
+  margin-left: 0.5rem;
+  flex-shrink: 0;
 }
 
 .categoryScroller {
@@ -367,6 +446,21 @@ input.searchInput {
 .stockCount {
   font-weight: 700;
   color: var(--color-text);
+}
+
+.pPrice {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.currency {
+  font-size: 0.75rem;
+  margin-right: 2px;
+  color: var(--color-text-dim);
+  font-weight: 600;
 }
 
 .pActionIcon {

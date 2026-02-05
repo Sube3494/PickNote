@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './page.module.css';
 import Modal from '@/components/Modal';
+import { CustomSelect } from '@/components/CustomSelect';
 import { useToast } from '@/components/ToastContext';
 
 interface Product {
@@ -16,6 +17,7 @@ interface Product {
   spec?: string;
   images: string[];
   currentStock: number;
+  price: number;
   createdAt: string;
 }
 
@@ -31,6 +33,7 @@ export default function ProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('全部');
+  const [searchScope, setSearchScope] = useState('all'); // 'all', 'code', 'name'
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -61,6 +64,8 @@ export default function ProductsPage() {
         limit: '20',
       });
       if (selectedCategory !== '全部') params.append('category', selectedCategory);
+      if (selectedCategory !== '全部') params.append('category', selectedCategory);
+      if (searchScope !== 'all') params.append('scope', searchScope);
       if (searchQuery) params.append('search', searchQuery);
 
       const prodData = await safeFetch(`/api/products?${params}`);
@@ -74,7 +79,7 @@ export default function ProductsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, selectedCategory, searchQuery]);
+  }, [page, selectedCategory, searchQuery, searchScope]);
 
 
   useEffect(() => {
@@ -138,11 +143,11 @@ export default function ProductsPage() {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <Link href="/products/import" className={styles.secondaryBtn}>
+          <Link href="/products/import" className={`btn ${styles.secondaryBtn}`}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             批量导入
           </Link>
-          <Link href="/products/new" className={styles.primaryBtn}>
+          <Link href="/products/new" className={`btn ${styles.primaryBtn}`}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             新增货品
           </Link>
@@ -151,26 +156,46 @@ export default function ProductsPage() {
 
       <div className={styles.filtersGlass}>
         <div className={styles.searchBar}>
-          <svg className={styles.searchIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input
-            type="text"
-            placeholder="搜索货品名称、编码、条码或品类..."
-            className={styles.searchInput}
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setPage(1);
-            }}
-          />
-          {searchQuery && (
-            <button 
-              className={styles.searchClear} 
-              onClick={() => {setSearchQuery(''); setPage(1);}}
-              title="清除搜索"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-          )}
+          <div className={styles.searchScope}>
+             <CustomSelect
+                value={searchScope}
+                onChange={(val) => {
+                  setSearchScope(val as string);
+                  setPage(1);
+                }}
+                options={[
+                  { label: '综合搜索', value: 'all' },
+                  { label: '按编码', value: 'code' },
+                  { label: '按名称', value: 'name' }
+                ]}
+                placeholder="搜索范围"
+                variant="ghost"
+                className={styles.scopeSelect} 
+             />
+          </div>
+          
+          <div className={styles.searchInputWrapper}>
+            <svg className={styles.searchIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input
+              type="text"
+              placeholder="请输入关键词..."
+              className={styles.searchInput}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
+            />
+            {searchQuery && (
+              <button 
+                className={styles.searchClear} 
+                onClick={() => {setSearchQuery(''); setPage(1);}}
+                title="清除搜索"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            )}
+          </div>
         </div>
         
         <div className={`${styles.categoryScroller} u-flex-center`}>
@@ -202,11 +227,18 @@ export default function ProductsPage() {
       {loading ? null : products.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-border)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
           </div>
           <h3>未找到匹配货品</h3>
-          <p>请尝试精简搜索条件或选择其他品类。</p>
-          <button className={styles.emptyReset} onClick={() => {setSearchQuery(''); setSelectedCategory('全部');}}>重置全部筛选</button>
+          <p>可能是搜索条件过于严格。请尝试使用更广泛的关键词，或切换品类筛选。</p>
+          <button className={styles.emptyReset} onClick={() => {setSearchQuery(''); setSelectedCategory('全部'); setSearchScope('all');}}>
+            重置全部筛选条件
+          </button>
         </div>
       ) : (
         <div className={styles.mainGridWrapper}>
@@ -231,14 +263,8 @@ export default function ProductsPage() {
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                       </div>
                     )}
-                    {product.currentStock > 0 && (
-                      <div className={styles.topStatus}>
-                        <span className={`${styles.stockBadge} ${product.currentStock > 10 ? styles.stockOK : styles.stockWarning}`}>
-                          {product.currentStock > 10 ? '货源充足' : `仅剩 ${product.currentStock} 件`}
-                        </span>
-                      </div>
-                    )}
-
+                    {/* Stock Status Badge Removed */}
+                    
                     {/* 圆形复选框：右上角 */}
                     <div className={styles.selectArea} onClick={(e) => toggleSelect(product.id, e)}>
                       <div className={`${styles.customCheck} ${selectedIds.has(product.id) ? styles.checked : ''}`}>
@@ -258,8 +284,9 @@ export default function ProductsPage() {
                     </div>
                     <h3 className={styles.pTitle} title={product.name}>{product.name}</h3>
                     <div className={styles.pInfoRow}>
-                      <div className={styles.pMainInfo}>
-                         <p className={styles.pSubtext}>库存: <span className={styles.stockCount}>{product.currentStock}</span> 件</p>
+                      <div className={styles.pPrice}>
+                        <span className={styles.currency}>¥</span>
+                        {product.price?.toFixed(2) || '0.00'}
                       </div>
                       <div className={styles.pActionIcon}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>

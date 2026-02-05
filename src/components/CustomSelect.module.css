@@ -19,11 +19,33 @@
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+  white-space: nowrap;
 }
 
 .trigger:hover {
   border-color: var(--color-primary);
   background-color: var(--color-bg-card);
+}
+
+.triggerGhost {
+  background-color: transparent !important;
+  border: none !important;
+  padding-left: 1rem; /* Standard left padding */
+  padding-right: 0.5rem; /* Standard right padding */
+  height: 100%;
+  box-shadow: none !important;
+  border-radius: 0 !important; /* Remove radius to match flat look */
+}
+
+.triggerGhost:hover {
+  background-color: transparent !important;
+}
+
+/* Ensure open state doesn't add border/bg back for ghost */
+.triggerGhost.triggerOpen {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .triggerOpen {
@@ -51,7 +73,8 @@
   position: absolute;
   top: calc(100% + 5px);
   left: 0;
-  right: 0;
+  min-width: 100%;
+  width: max-content; /* Allow expansion */
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: 14px;
@@ -84,6 +107,7 @@
   justify-content: space-between;
   transition: all 0.2s ease;
   margin-bottom: 2px;
+  white-space: nowrap;
 }
 
 .option:last-child {
