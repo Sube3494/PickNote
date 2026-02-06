@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  animation: pageIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: pageIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem 2rem 4rem;
   width: 100%;
 }
 
@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--glass-border);
   padding-bottom: 2rem;
 }
 
@@ -37,9 +37,14 @@
 .title {
   font-size: 2rem;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   color: var(--color-text);
   line-height: 1.1;
+  background: var(--color-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-image: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-muted) 100%);
 }
 
 .subtitle {
@@ -57,27 +62,29 @@
 }
 
 .uploadCard {
-  background: var(--grad-surface);
-  border: 1px solid var(--color-border);
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border-highlight);
   border-radius: 32px;
   padding: 3rem;
-  box-shadow: var(--shadow-small);
+  box-shadow: var(--glass-shadow);
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   position: relative;
   overflow: hidden;
 }
 
 .dropZone {
-  border: 2px dashed var(--color-border);
+  border: 2px dashed var(--glass-border);
   border-radius: 24px;
   padding: 5rem 2rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.4s var(--ease-spring);
-  background: var(--color-bg-alt);
+  background: var(--input-bg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,21 +97,21 @@
   border-color: var(--color-primary);
   background: var(--color-primary-soft);
   transform: scale(1.01);
-  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.05);
+  box-shadow: 0 12px 24px var(--color-primary-glow);
 }
 
 .hasFile {
   border-style: solid;
   border-color: var(--color-primary);
-  background: var(--color-bg-card);
+  background: var(--glass-surface-hover);
   border-width: 1px;
-  box-shadow: var(--shadow-premium);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.05);
 }
 
 .uploadIcon {
   width: 64px;
   height: 64px;
-  background: var(--color-bg-card);
+  background: var(--glass-surface);
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -112,14 +119,14 @@
   color: var(--color-primary);
   transition: all 0.4s var(--ease-spring);
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--glass-border);
 }
 
 .dropZone:hover .uploadIcon {
   transform: translateY(-6px) rotate(-5deg);
   background: var(--color-primary);
   color: #fff;
-  box-shadow: 0 8px 20px var(--color-primary-soft-bold);
+  box-shadow: 0 8px 20px var(--color-primary-glow);
 }
 
 .uploadText {
@@ -171,7 +178,9 @@
   height: 56px !important;
   font-size: 1.0625rem !important;
   border-radius: 16px !important;
-  box-shadow: 0 8px 20px var(--color-primary-soft-bold) !important;
+  box-shadow: 0 8px 20px var(--color-primary-glow) !important;
+  background: var(--grad-primary) !important;
+  border: none !important;
 }
 
 .importBtn:disabled {
@@ -185,6 +194,15 @@
   border-radius: 16px !important;
   height: 56px !important;
   font-weight: 800 !important;
+  background: var(--glass-surface) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--color-text-dim) !important;
+}
+
+.resetBtn:hover {
+  background: var(--glass-surface-hover) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-primary) !important;
 }
 
 /* Message Styles */
@@ -201,57 +219,27 @@
 }
 
 .success {
-  background: rgba(16, 185, 129, 0.08);
+  background: rgba(16, 185, 129, 0.1);
   color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
 }
 
 .error {
-  background: rgba(239, 68, 68, 0.08);
+  background: rgba(239, 68, 68, 0.1);
   color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.15);
-}
-
-/* Progress Styles */
-.progressWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-.progressBar {
-  height: 10px;
-  background: var(--color-bg-alt);
-  border-radius: 100px;
-  overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.progressFill {
-  height: 100%;
-  background: var(--grad-primary);
-  transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-shadow: 0 0 12px var(--color-primary-soft-bold);
-}
-
-.progressText {
-  font-size: 0.8125rem;
-  font-weight: 900;
-  color: var(--color-text-muted);
-  text-align: right;
-  font-family: var(--font-mono);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
 }
 
 /* Guide Styles */
 .guide {
-  background: var(--grad-surface);
+  background: var(--glass-surface);
   border-radius: 32px;
   padding: 2.5rem;
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-small);
-  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
 }
 
 .guideTitle {
@@ -273,19 +261,19 @@
 
 .guideList li {
   font-size: 0.875rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-dim);
   line-height: 1.7;
   padding: 1rem;
-  background: var(--color-bg-card);
+  background: var(--input-bg);
   border-radius: 16px;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--glass-border);
   transition: all 0.3s ease;
 }
 
 .guideList li:hover {
-  border-color: var(--color-primary-soft-bold);
+  border-color: var(--color-primary);
   transform: translateX(4px);
-  box-shadow: var(--shadow-sm);
+  background: var(--glass-surface-hover);
 }
 
 .guideList b {
@@ -293,14 +281,15 @@
   font-weight: 800;
 }
 
+/* Animations */
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pageIn {
-  from { opacity: 0; transform: translateY(30px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (max-width: 1024px) {
@@ -310,24 +299,11 @@
 }
 
 @media (max-width: 640px) {
-  .uploadCard {
-    padding: 1.75rem;
-    border-radius: 24px;
-  }
-  
-  .dropZone {
-    padding: 3rem 1rem;
-  }
-  
-  .title {
-    font-size: 1.75rem;
-  }
-  
-  .mainText {
-    font-size: 1.125rem;
-  }
-
-  .actions {
-    flex-direction: column;
-  }
+  .page { padding: 1rem; }
+  .uploadCard { padding: 1.75rem; border-radius: 24px; }
+  .dropZone { padding: 3rem 1rem; }
+  .title { font-size: 1.75rem; }
+  .mainText { font-size: 1.125rem; }
+  .actions { flex-direction: column; }
+  .guideList { grid-template-columns: 1fr; }
 }

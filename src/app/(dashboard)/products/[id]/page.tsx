@@ -4,6 +4,7 @@ import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import Skeleton from '@/components/Skeleton';
 import { useToast } from '@/components/ToastContext';
 import Modal from '@/components/Modal';
 import styles from './page.module.css';
@@ -97,7 +98,42 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     }
   };
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div className={styles.page}>
+         <div className={styles.header}>
+            <Skeleton width={100} height={24} />
+            <div className={styles.iconActions}>
+               <Skeleton width={40} height={40} borderRadius="50%" />
+               <Skeleton width={40} height={40} borderRadius="50%" />
+            </div>
+         </div>
+         <main className={styles.container}>
+            <aside className={styles.imageSection}>
+               <Skeleton width="100%" height={500} borderRadius={24} />
+            </aside>
+            <article className={styles.detailsSection}>
+               <div className={styles.heroContent}>
+                  <div className={styles.heroLabels} style={{display: 'flex', gap: 10, marginBottom: 10}}>
+                     <Skeleton width={80} height={24} borderRadius={100} />
+                     <Skeleton width={100} height={24} borderRadius={100} />
+                  </div>
+                  <Skeleton width="70%" height={48} style={{ marginBottom: 20 }} />
+               </div>
+               <div className={styles.assetSection} style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16}}>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                     <Skeleton key={i} width="100%" height={100} borderRadius={16} />
+                  ))}
+               </div>
+                <div style={{ marginTop: 24 }}>
+                   <Skeleton width="30%" height={24} style={{ marginBottom: 12 }} />
+                   <Skeleton width="100%" height={80} borderRadius={16} />
+                </div>
+            </article>
+         </main>
+      </div>
+    );
+  }
   if (!product) return null;
 
   return (

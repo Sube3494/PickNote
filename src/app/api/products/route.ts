@@ -18,8 +18,16 @@ export async function GET(request: Request) {
     // 构建查询条件
     const where: Prisma.ProductWhereInput = {};
     
+    const status = searchParams.get('status');
+
     if (category && category !== '全部') {
       where.category = category;
+    }
+
+    if (status === 'low') {
+      where.currentStock = { gt: 0, lte: 5 }; // Low stock: 1-5
+    } else if (status === 'out') {
+      where.currentStock = { lte: 0 }; // Out of stock
     }
     
     if (search) {
@@ -66,6 +74,14 @@ export async function GET(request: Request) {
 
     const total = filteredProducts.length;
     
+    // 3.5 计算统计数据 (基于筛选后的结果，不分页)
+    const stats = filteredProducts.reduce((acc, p) => ({
+      totalStock: acc.totalStock + p.currentStock,
+      totalValue: acc.totalValue + (p.currentStock * (p.price || 0)),
+      lowStock: acc.lowStock + (p.currentStock > 0 && p.currentStock <= 5 ? 1 : 0),
+      outStock: acc.outStock + (p.currentStock <= 0 ? 1 : 0)
+    }), { totalStock: 0, totalValue: 0, lowStock: 0, outStock: 0 });
+
     // 4. 内存分页: 截取当前页对应的 ID 列表
     const pagedIds = filteredProducts.slice(skip, skip + limit).map(p => p.id);
 
@@ -88,6 +104,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       data: productsWithImages,
+      stats, // Return stats
       pagination: {
         page,
         limit,

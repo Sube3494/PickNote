@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Skeleton from '@/components/Skeleton';
 import styles from './page.module.css';
 
 interface Supplier {
@@ -78,8 +79,25 @@ export default function SuppliersPage() {
       </div>
 
       {loading ? (
-        <div style={{ padding: '8rem', textAlign: 'center', color: 'var(--color-text-dim)', fontWeight: 600 }}>
-          正在穿透同步供应商全线数据...
+        <div className={styles.grid}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className={styles.card}>
+              <div className={styles.cardHeader}>
+                <div style={{ width: '100%' }}>
+                  <Skeleton width="60%" height={24} style={{ marginBottom: 8 }} />
+                  <Skeleton width="30%" height={20} borderRadius={100} />
+                </div>
+              </div>
+              <div className={styles.contactInfo}>
+                <Skeleton width="80%" height={20} style={{ marginBottom: 12 }} />
+                <Skeleton width="70%" height={20} style={{ marginBottom: 12 }} />
+                <Skeleton width="90%" height={20} />
+              </div>
+              <div className={styles.cardFooter}>
+                <Skeleton width="100px" height={24} />
+              </div>
+            </div>
+          ))}
         </div>
       ) : filteredSuppliers.length === 0 ? (
         <div style={{ padding: '8rem', textAlign: 'center', background: 'var(--color-bg-card)', borderRadius: '24px', border: '1px dashed var(--color-border)' }}>

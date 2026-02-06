@@ -1,12 +1,12 @@
 .page {
-  animation: pageIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fade-in-up var(--duration-normal) var(--ease-out-quart) forwards;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
   max-width: 1100px;
   margin: 0 auto;
   width: 100%;
-  padding: 1rem 0 4rem;
+  padding: 1.5rem 0 5rem;
 }
 
 .header {
@@ -19,22 +19,27 @@
 .backLink {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.75rem;
   font-size: 0.8125rem;
-  font-weight: 800;
+  font-weight: 850;
   color: var(--color-text-dim);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-lg);
-  transition: all 0.2s ease;
+  letter-spacing: 0.1em;
+  padding: 0.625rem 1.25rem;
+  border-radius: 99px;
+  transition: all var(--duration-normal) var(--ease-out-quart);
   cursor: pointer;
+  background: var(--glass-surface-opaque);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
 }
 
 .backLink:hover {
   color: var(--color-primary);
-  background: var(--color-primary-soft);
-  transform: translateX(-4px);
+  background: var(--glass-surface-hover);
+  border-color: var(--color-primary-glow);
+  transform: translateX(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .iconActions {
@@ -45,9 +50,10 @@
 .iconBtn {
   width: 44px;
   height: 44px;
-  border-radius: 14px;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-card);
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-surface);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,14 +66,16 @@
 .iconBtn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  background: var(--glass-surface-hover);
   transform: translateY(-2px);
 }
 
 .deleteBtn:hover {
   border-color: var(--color-error);
-  color: var(--color-error);
-  background: var(--color-error-soft);
+  color: white;
+  background: var(--color-error);
+  box-shadow: 0 4px 15px var(--color-error-bg);
 }
 
 .container {
@@ -78,7 +86,7 @@
   align-items: start;
 }
 
-/* Gallery Section - Pure & Focused */
+/* Gallery Section */
 .imageSection {
   display: flex;
   flex-direction: column;
@@ -91,14 +99,16 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  background: #fff;
-  border-radius: 32px;
-  border: 1px solid var(--color-border);
+  background: var(--glass-surface-opaque);
+  border-radius: 40px;
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border-highlight);
   overflow: hidden;
-  box-shadow: var(--shadow-premium);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: zoom-in var(--duration-normal) var(--ease-out-elastic) backwards 0.1s;
 }
 
 .mainImageWrapper {
@@ -118,36 +128,43 @@
 }
 
 .thumbnailGrid {
-  display: flex;
-  gap: 1rem;
-  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+  padding: 0.75rem;
+  background: var(--glass-surface-opaque);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  animation: fade-in-up var(--duration-normal) var(--ease-out-quart) backwards 0.2s;
 }
 
 .thumbnail {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
+  aspect-ratio: 1;
+  border-radius: 12px;
   border: 2px solid transparent;
-  padding: 4px;
-  background: var(--color-bg-card);
+  padding: 3px;
+  background: rgba(255,255,255,0.05);
   cursor: pointer;
   transition: all 0.2s var(--ease-in-out);
+  overflow: hidden;
 }
 
 .thumbnailActive {
   border-color: var(--color-primary);
   background: var(--color-primary-soft);
   transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .thumbnail img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
-/* Content Section - High Hierarchy */
+/* Content Section */
 .detailsSection {
   display: flex;
   flex-direction: column;
@@ -173,9 +190,10 @@
   color: var(--color-primary);
   background: var(--color-primary-soft);
   padding: 0.25rem 0.75rem;
-  border-radius: 6px;
+  border-radius: 99px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .codeLabel {
@@ -183,15 +201,23 @@
   font-weight: 600;
   color: var(--color-text-dim);
   font-family: var(--font-mono);
+  background: var(--glass-surface);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
 }
 
 .pageTitle {
-  font-size: 1.75rem;
+  font-size: 2.25rem;
   font-weight: 850;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-  color: var(--color-text);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   word-break: break-word;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.1));
 }
 
 /* Asset / Stats Section */
@@ -202,20 +228,29 @@
 }
 
 .assetCard {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 20px;
-  padding: 1.25rem 1.5rem;
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border-highlight);
+  border-radius: 24px;
+  padding: 1.5rem 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.01);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 0.75rem;
+  box-shadow: var(--glass-shadow);
+  transition: all var(--duration-normal) var(--ease-out-quart);
+  animation: fade-in-up var(--duration-normal) var(--ease-out-quart) backwards;
 }
 
+.assetCard:nth-child(1) { animation-delay: 0.2s; }
+.assetCard:nth-child(2) { animation-delay: 0.25s; }
+
 .assetCard:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: var(--glass-surface-hover);
+  border-color: var(--color-primary-glow);
 }
 
 .assetLabel {
@@ -245,18 +280,17 @@
   color: var(--color-text-dim);
 }
 
-.lowStock {
-  color: var(--color-error);
-}
-
 /* Details Grid */
 .detailsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
-  padding: 2rem;
-  background: var(--color-bg-alt);
-  border-radius: 24px;
+  padding: 2.5rem;
+  background: var(--input-bg);
+  border-radius: 32px;
+  border: 1px solid var(--input-border);
+  backdrop-filter: blur(12px);
+  animation: fade-in-up var(--duration-normal) var(--ease-out-quart) backwards 0.35s;
 }
 
 .detailItem {
@@ -292,10 +326,11 @@
   color: var(--color-text-muted);
   font-weight: 500;
   padding: 1.5rem;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   min-height: 100px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
 }
 
 /* History Section */
@@ -324,6 +359,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
 }
 
 .historyList {
@@ -335,18 +371,21 @@
 .historyItem {
   display: grid;
   grid-template-columns: 120px 1fr 100px 100px;
-  padding: 1.25rem 1.5rem;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 16px;
+  padding: 1.25rem 1.75rem;
+  background: var(--glass-surface-opaque);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
   align-items: center;
-  gap: 1rem;
-  transition: all 0.2s ease;
+  gap: 1.25rem;
+  transition: all var(--duration-normal) var(--ease-out-quart);
 }
 
 .historyItem:hover {
-  border-color: var(--color-primary-soft-bold);
-  transform: translateX(4px);
+  border-color: var(--color-primary);
+  background: var(--glass-surface-hover);
+  transform: translateX(10px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  color: var(--color-primary);
 }
 
 .historyDate {
@@ -361,8 +400,9 @@
 }
 
 .historyPrice {
+  font-family: var(--font-mono);
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-text);
   text-align: right;
 }
 
@@ -372,19 +412,9 @@
   text-align: right;
 }
 
-.emptyState {
-  padding: 3rem;
-  text-align: center;
-  color: var(--color-text-dim);
-  font-weight: 600;
-  background: var(--color-bg-alt);
-  border-radius: 20px;
-  border: 2px dashed var(--color-border);
-}
-
 @keyframes pageIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (max-width: 1024px) {

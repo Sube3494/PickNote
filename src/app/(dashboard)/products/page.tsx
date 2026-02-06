@@ -7,6 +7,7 @@ import Image from 'next/image';
 import styles from './page.module.css';
 import Modal from '@/components/Modal';
 import { CustomSelect } from '@/components/CustomSelect';
+import Skeleton from '@/components/Skeleton';
 import { useToast } from '@/components/ToastContext';
 
 interface Product {
@@ -30,6 +31,7 @@ export default function ProductsPage() {
   const { showToast } = useToast();
 
   const [products, setProducts] = useState<Product[]>([]);
+  // Force refresh for UI update
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('全部');
@@ -164,7 +166,7 @@ export default function ProductsPage() {
                   setPage(1);
                 }}
                 options={[
-                  { label: '综合搜索', value: 'all' },
+                  { label: '全部货品', value: 'all' },
                   { label: '按编码', value: 'code' },
                   { label: '按名称', value: 'name' }
                 ]}
@@ -198,7 +200,7 @@ export default function ProductsPage() {
           </div>
         </div>
         
-        <div className={`${styles.categoryScroller} u-flex-center`}>
+        <div className={styles.categoryScroller}>
           <button
             className={`${styles.tabBtn} ${selectedCategory === '全部' ? styles.tabActive : ''}`}
             onClick={() => {
@@ -224,7 +226,29 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {loading ? null : products.length === 0 ? (
+      {loading ? (
+        <div className={styles.mainGridWrapper}>
+          <div className={styles.premiumGrid}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className={styles.pCard} style={{ pointerEvents: 'none' }}>
+                <div className={styles.visualContainer}>
+                  <Skeleton width="100%" height="100%" borderRadius="var(--radius-lg) var(--radius-lg) 0 0" />
+                </div>
+                <div className={styles.pContent}>
+                  <div className={styles.pMeta}>
+                    <Skeleton width={60} height={16} />
+                    <Skeleton width={40} height={16} />
+                  </div>
+                  <Skeleton width="90%" height={24} style={{ margin: '8px 0' }} />
+                  <div className={styles.pInfoRow}>
+                    <Skeleton width={80} height={24} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : products.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -245,9 +269,16 @@ export default function ProductsPage() {
           <div className={styles.premiumGrid}>
             {products.map((product) => (
                 <Link 
+                  href={`/products/${product.id}`}
                   key={product.id}
-                  href={`/products/${product.id}`} 
                   className={`${styles.pCard} ${selectedIds.has(product.id) ? styles.pCardSelected : ''}`}
+                  onClick={(e) => {
+                    // Prevent navigation if clicking select area or if selecting multiple
+                    if (selectedIds.size > 0 || (e.target as HTMLElement).closest(`.${styles.selectArea}`)) {
+                       e.preventDefault();
+                       if (selectedIds.size > 0) toggleSelect(product.id, e);
+                    }
+                  }}
                 >
                   <div className={styles.visualContainer}>
                     {product.images && product.images.length > 0 ? (
@@ -263,7 +294,6 @@ export default function ProductsPage() {
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                       </div>
                     )}
-                    {/* Stock Status Badge Removed */}
                     
                     {/* 圆形复选框：右上角 */}
                     <div className={styles.selectArea} onClick={(e) => toggleSelect(product.id, e)}>
@@ -283,13 +313,13 @@ export default function ProductsPage() {
                       <span className={styles.pTag}>{product.category}</span>
                     </div>
                     <h3 className={styles.pTitle} title={product.name}>{product.name}</h3>
+                    
+                    {/* Stock Display Removed as requested */}
+
                     <div className={styles.pInfoRow}>
                       <div className={styles.pPrice}>
                         <span className={styles.currency}>¥</span>
                         {product.price?.toFixed(2) || '0.00'}
-                      </div>
-                      <div className={styles.pActionIcon}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                       </div>
                     </div>
                   </div>

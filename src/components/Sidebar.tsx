@@ -2,7 +2,7 @@
  * @Date: 2026-02-03 18:57:44
  * @Author: Sube
  * @FilePath: Sidebar.tsx
- * @LastEditTime: 2026-02-04 19:12:35
+ * @LastEditTime: 2026-02-06 16:38:42
  * @Description: 
  */
 'use client';
@@ -44,7 +44,7 @@ const Icons = {
 const navItems = [
   { label: '控制台', href: '/', Icon: Icons.Dashboard },
   { label: '货品信息', href: '/products', Icon: Icons.Products },
-  { label: '库存核心', href: '/inventory', Icon: Icons.Clipboard },
+  { label: '库存管理', href: '/inventory', Icon: Icons.Clipboard },
   { label: '供应商管理', href: '/suppliers', Icon: Icons.Suppliers },
   { label: '进货记录管理', href: '/purchases', Icon: Icons.Purchases },
   { label: '品类管理', href: '/categories', Icon: Icons.Categories },

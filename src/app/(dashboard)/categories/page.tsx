@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/ToastContext';
 import Modal from '@/components/Modal';
 import { CustomSelect } from '@/components/CustomSelect';
+import Skeleton from '@/components/Skeleton';
 import styles from './page.module.css';
 
 interface Category {
@@ -266,8 +267,17 @@ export default function CategoriesPage() {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--color-text-dim)', fontWeight: 600 }}>
-            正在加载分类数据...
+          <div className={styles.categoryTree}>
+            {Array.from({ length: 5 }).map((_, i) => (
+               <div key={i} style={{ padding: '1rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <Skeleton width={20} height={20} borderRadius={6} />
+                  <Skeleton width={200} height={24} borderRadius={8} />
+                  <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
+                    <Skeleton width={24} height={24} borderRadius={8} />
+                    <Skeleton width={24} height={24} borderRadius={8} />
+                  </div>
+               </div>
+            ))}
           </div>
         ) : categories.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--color-text-dim)' }}>

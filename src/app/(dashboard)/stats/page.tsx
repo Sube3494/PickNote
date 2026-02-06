@@ -1,7 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Skeleton from '@/components/Skeleton';
 import styles from './page.module.css';
+
+// ... (interfaces remain same)
+
+// Define deterministic heights for skeleton bars to avoid impure render
+const SKELETON_BAR_HEIGHTS = ['40%', '70%', '50%', '85%', '60%', '30%', '75%'];
+
 
 interface SummaryData {
   purchaseCount: number;
@@ -62,7 +69,42 @@ export default function StatsPage() {
     window.open('/api/purchases/export', '_blank');
   };
 
-  if (loading) return <div style={{ padding: '4rem', textAlign: 'center' }}>深度分析数据加载中...</div>;
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.header}>
+          <Skeleton width={300} height={40} style={{ marginBottom: 10 }} />
+          <Skeleton width={200} height={20} />
+        </div>
+        
+        <div className={styles.summaryGrid}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={styles.statCard}>
+              <Skeleton width="40%" height={20} style={{ marginBottom: 10 }} />
+              <Skeleton width="60%" height={32} />
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.chartsGrid}>
+           <div className={styles.chartCard} style={{ height: 400 }}>
+              <Skeleton width="100%" height={40} style={{ marginBottom: 20 }} />
+              <div style={{ display: 'flex', alignItems: 'flex-end', height: '300px', gap: '20px' }}>
+                 {Array.from({ length: 7 }).map((_, i) => (
+                    <Skeleton key={i} width="100%" height={SKELETON_BAR_HEIGHTS[i % SKELETON_BAR_HEIGHTS.length]} borderRadius={4} />
+                 ))}
+              </div>
+           </div>
+           <div className={styles.chartCard} style={{ height: 400 }}>
+              <Skeleton width="100%" height={40} style={{ marginBottom: 20 }} />
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} width="100%" height={40} style={{ marginBottom: 15 }} />
+              ))}
+           </div>
+        </div>
+      </div>
+    );
+  }
 
   const safeTrends = trends || [];
   const maxTrend = Math.max(...safeTrends.map(t => t.amount), 1);

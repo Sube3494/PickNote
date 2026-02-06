@@ -3,14 +3,12 @@
    ============================================================ */
 
 .page {
-  animation: pageIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fade-in-up var(--duration-normal) var(--ease-out-quart) forwards;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 2rem;
-  min-height: 100vh;
+  gap: 2.5rem;
+  width: 100%;
+  padding: 1rem 0 5rem;
 }
 
 /* ============================================================
@@ -24,19 +22,25 @@
   min-height: 50vh;
   gap: 1.5rem;
   text-align: center;
-  animation: pageIn 0.4s ease-out;
+  /* animation: pageIn 0.4s ease-out; */
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 3rem;
 }
 
 .emptyIcon {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: var(--color-bg-alt);
+  background: rgba(255,255,255,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-text-dim);
-  box-shadow: var(--shadow-sm);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
   margin-bottom: 0.5rem;
 }
 
@@ -56,47 +60,52 @@
 
 .emptyReset {
   background: transparent;
-  border: none;
+  border: 1px solid var(--color-primary);
   color: var(--color-primary);
   font-weight: 700;
   font-size: 0.9375rem;
   cursor: pointer;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.5rem;
   border-radius: 8px;
   transition: all 0.2s ease;
   margin-top: 0.5rem;
 }
 
 .emptyReset:hover {
-  background: var(--color-primary-soft);
-  text-decoration: none;
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 12px var(--color-primary-glow);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.75rem;
 }
 
 .titleGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: 0.5rem;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 800;
+  font-size: 2.25rem;
+  font-weight: 850;
   letter-spacing: -0.03em;
-  color: var(--color-text);
   line-height: 1.1;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.1));
 }
 
 .subtitle {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: var(--color-text-dim);
-  font-weight: 500;
+  font-weight: 550;
 }
 
 .highlight {
@@ -111,56 +120,60 @@
 }
 
 /* ============================================================
-   BUTTON SISTEM (Local modifiers)
-   ============================================================ */
-
-.primaryBtn {
-}
-
-.secondaryBtn {
-}
-
-/* ============================================================
    FILTERS & SEARCH
    ============================================================ */
 
 .filtersGlass {
-  background: var(--color-bg-card);
-  padding: 1.25rem;
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  padding: 1.5rem;
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border-highlight);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  box-shadow: var(--shadow-sm);
+  gap: 1.5rem;
+  box-shadow: var(--glass-shadow);
+  animation: fade-in-up var(--duration-normal) var(--ease-out-quart) backwards 0.1s;
+  z-index: 20;
+  position: relative;
 }
 
 .searchBar {
   position: relative;
+  z-index: 10;
   display: flex;
   align-items: center;
-  background: var(--color-bg-alt);
-  border-radius: 12px;
-  height: var(--input-height, 48px);
-  border: 1px solid var(--color-border);
-  transition: all 0.2s ease;
-  /* overflow: hidden; Removed to allow dropdown to overflow */
+  background: var(--input-bg);
+  border-radius: 16px;
+  height: 56px;
+  border: 1px solid var(--input-border);
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  backdrop-filter: blur(4px);
 }
 
 .searchBar:focus-within {
-  background: var(--color-bg-card);
+  background: var(--glass-surface-hover);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px var(--color-primary-soft);
+  box-shadow: 0 0 0 4px var(--color-primary-glow);
+  transform: translateY(-1px);
 }
 
 /* Scope Selector Container */
 .searchScope {
   flex-shrink: 0;
-  width: 120px;
+  width: 130px;
   height: 100%;
-  border-right: 1px solid var(--color-border); /* Proper separator */
+  border-right: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
+  --trigger-radius: 14px 0 0 14px;
+}
+
+.scopeSelect {
+  width: 100%;
+  height: 100%;
 }
 
 /* Search Input Container */
@@ -193,7 +206,7 @@ input.searchInput {
 }
 
 .searchClear {
-  background: var(--color-border-subtle);
+  background: rgba(0,0,0,0.05);
   border: none;
   width: 20px;
   height: 20px;
@@ -205,14 +218,20 @@ input.searchInput {
   cursor: pointer;
   margin-left: 0.5rem;
   flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.searchClear:hover {
+  background: rgba(0,0,0,0.1);
+  color: var(--color-text);
 }
 
 .categoryScroller {
   display: flex;
   gap: 0.625rem;
   overflow-x: auto;
-  padding: 0.25rem 0 0.50rem 0;
-  margin: -0.25rem 0 -0.50rem 0;
+  padding: 1rem 0.5rem 1.5rem 0.5rem; /* Increased padding to show shadows */
+  margin: -1rem -0.5rem -1.5rem -0.5rem; /* Compensate for padding */
   scrollbar-width: none;
 }
 
@@ -222,10 +241,10 @@ input.searchInput {
 
 .tabBtn {
   flex-shrink: 0;
-  padding: 0.375rem 1rem;
-  background: var(--color-bg-alt);
-  border: 1px solid transparent;
-  border-radius: var(--radius-full);
+  padding: 0.5rem 1.25rem;
+  background: var(--input-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 99px;
   font-size: 0.8125rem;
   font-weight: 700;
   color: var(--color-text-muted);
@@ -233,16 +252,22 @@ input.searchInput {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  transition: all var(--duration-fast) var(--ease-out-quart);
 }
 
 .tabBtn:hover {
-  background: var(--color-border-subtle);
-  color: var(--color-text);
+  background: var(--glass-surface-hover);
+  color: var(--color-primary);
+  border-color: var(--color-primary-glow);
+  transform: translateY(-1px);
 }
 
 .tabActive {
-  background: var(--color-primary) !important;
+  background: var(--grad-primary) !important;
   color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 15px var(--color-primary-glow);
+  transform: scale(1.05);
 }
 
 .badge {
@@ -257,7 +282,7 @@ input.searchInput {
 }
 
 /* ============================================================
-   GRID SYSTEM (COMPACT)
+   GRID SYSTEM
    ============================================================ */
 
 .mainGridWrapper {
@@ -269,14 +294,26 @@ input.searchInput {
 
 .premiumGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); /* 缩小卡片宽度，提升密度 */
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
 }
 
 .pCardWrapper {
   position: relative;
-  /* 移除了所有动画 */
 }
+
+/* Staggered Animation Delays */
+/* Staggered Animation Delays from minpic */
+.pCard:nth-child(1) { animation-delay: 0.05s; }
+.pCard:nth-child(2) { animation-delay: 0.1s; }
+.pCard:nth-child(3) { animation-delay: 0.15s; }
+.pCard:nth-child(4) { animation-delay: 0.2s; }
+.pCard:nth-child(5) { animation-delay: 0.25s; }
+.pCard:nth-child(6) { animation-delay: 0.3s; }
+.pCard:nth-child(7) { animation-delay: 0.35s; }
+.pCard:nth-child(8) { animation-delay: 0.4s; }
+.pCard:nth-child(9) { animation-delay: 0.45s; }
+.pCard:nth-child(10) { animation-delay: 0.5s; }
 
 /* ============================================================
    CARD SELECTION
@@ -284,11 +321,11 @@ input.searchInput {
 
 .selectArea {
   position: absolute;
-  top: 0.625rem;
-  right: 0.625rem;
+  top: 0.75rem;
+  right: 0.75rem;
   z-index: 20;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -303,17 +340,18 @@ input.searchInput {
 }
 
 .customCheck {
-  width: 22px;
-  height: 22px;
-  background: rgba(255, 255, 255, 0.85); /* 玻璃感背景 */
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(4px);
   border: 1.5px solid rgba(0,0,0,0.1);
-  border-radius: 50%; /* 圆形 */
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   transition: all var(--duration-fast);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .checked {
@@ -322,42 +360,67 @@ input.searchInput {
 }
 
 /* ============================================================
-   PRODUCT CARD (STABLE & COMPACT)
+   PRODUCT CARD
    ============================================================ */
 
 .pCard {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border-highlight);
+  border-radius: 20px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* 减弱阴影，让界面更平整 */
+  box-shadow: var(--glass-shadow);
   height: 100%;
   text-decoration: none;
   position: relative;
+  transition: all var(--duration-normal) var(--ease-out-quart);
+  animation: fade-in-up var(--duration-normal) var(--ease-out-quart) backwards;
+  will-change: transform, box-shadow;
 }
 
 .pCard:hover {
-  border-color: var(--color-primary);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2), 0 0 0 1px var(--color-primary-glow);
+  border-color: var(--color-primary-glow);
+  z-index: 2;
 }
 
 .pCardSelected {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 1px var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary), 0 10px 25px rgba(var(--color-primary), 0.2);
+  background: color-mix(in srgb, var(--color-primary), transparent 95%);
+}
+
+.pCardSelected:hover {
+  transform: translateY(-4px) scale(1.01);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .visualContainer {
   position: relative;
   aspect-ratio: 4/3;
-  background: var(--color-bg-alt);
+  background: rgba(255,255,255,0.05);
   overflow: hidden;
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .pImg {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out-quart);
+}
+
+.pCard:hover .pImg {
+  transform: scale(1.1); /* Minpic standard zoom */
 }
 
 .pNoImg {
@@ -366,14 +429,20 @@ input.searchInput {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-bg-alt);
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255,255,255,0.03) 10px,
+    rgba(255,255,255,0.03) 20px
+  );
   color: var(--color-text-dim);
 }
 
 .topStatus {
   position: absolute;
   top: 0.75rem;
-  left: 0.75rem; /* 移到左边，避开右边的复选框 */
+  left: 0.75rem;
   z-index: 5;
 }
 
@@ -382,15 +451,16 @@ input.searchInput {
   font-weight: 800;
   padding: 0.25rem 0.625rem;
   border-radius: var(--radius-full);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  backdrop-filter: blur(8px);
 }
 
-.stockOK { background: #22c55e; color: white; }
-.stockWarning { background: #f59e0b; color: white; }
-.stockOut { background: #ef4444; color: white; }
+.stockOK { background: rgba(34, 197, 94, 0.9); color: white; }
+.stockWarning { background: rgba(245, 158, 11, 0.9); color: white; }
+.stockOut { background: rgba(239, 68, 68, 0.9); color: white; }
 
 .pContent {
-  padding: 1rem; /* 缩小内边距 */
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -408,16 +478,22 @@ input.searchInput {
   font-weight: 800;
   color: var(--color-text-dim);
   font-family: var(--font-mono);
+  background: rgba(0,0,0,0.03);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .pTag {
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--color-primary);
+  background: var(--color-primary-soft);
+  padding: 2px 8px;
+  border-radius: 99px;
 }
 
 .pTitle {
-  font-size: 0.875rem; /* 字号缩小 */
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--color-text);
   line-height: 1.4;
@@ -435,7 +511,7 @@ input.searchInput {
   justify-content: space-between;
   align-items: center;
   padding-top: 0.75rem;
-  border-top: 1px solid var(--color-border-subtle);
+  border-top: 1px solid var(--glass-border);
 }
 
 .pSubtext {
@@ -463,15 +539,6 @@ input.searchInput {
   font-weight: 600;
 }
 
-.pActionIcon {
-  width: 24px;
-  height: 24px;
-  color: var(--color-text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* ============================================================
    PAGINATION
    ============================================================ */
@@ -485,35 +552,56 @@ input.searchInput {
 .pager {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
-  background: var(--color-bg-card);
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-border-subtle);
+  gap: 1.5rem;
+  background: var(--glass-surface-opaque);
+  backdrop-filter: blur(20px);
+  padding: 0.625rem 1rem;
+  border-radius: 99px;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .pageArrow {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: none;
-  background: var(--color-bg-alt);
+  border: 1px solid var(--glass-border);
+  background: var(--input-bg);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: var(--color-text);
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.pageArrow:hover:not(:disabled) {
+  background: var(--grad-primary);
+  color: white;
+  border-color: transparent;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px var(--color-primary-glow);
+}
+
+.pageArrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  filter: grayscale(1);
 }
 
 .pageNumbers {
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: 0.9375rem;
+  font-weight: 750;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  color: var(--color-text-dim);
 }
 
 .current { 
   color: var(--color-primary); 
+  font-size: 1.125rem;
+  font-weight: 900;
 }
 
 /* ============================================================
@@ -523,12 +611,13 @@ input.searchInput {
 .floatingActionBar {
   position: fixed;
   bottom: 2rem;
-  left: 260px;
+  left: 280px; /* Sidebar width */
   right: 0;
   display: flex;
   justify-content: center;
   z-index: 1000;
   pointer-events: none;
+  transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (max-width: 768px) {
@@ -537,53 +626,59 @@ input.searchInput {
   }
 }
 
+.actionContent {
+  pointer-events: auto;
+  background: rgba(15, 23, 42, 0.85); /* Dark glass for higher visibility */
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.875rem 1.5rem;
+  border-radius: 99px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+  max-width: 90vw;
+  color: white;
+  animation: reveal var(--duration-normal) var(--ease-out-quart) forwards;
+}
+
+[data-theme='light'] .actionContent {
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
 .actionSelectAll {
   background: transparent;
   border: none;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.25rem 0.5rem;
+  gap: 0.5rem;
+  padding: 0.5rem;
   border-radius: 8px;
   cursor: pointer;
-  white-space: nowrap; /* 禁止文字换行 */
+  white-space: nowrap;
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: inherit;
   transition: background-color var(--duration-fast);
 }
 
 .actionSelectAll:hover {
-  background: var(--color-bg-alt);
-}
-
-.actionContent {
-  pointer-events: auto; /* 允许操作栏本体点击 */
-  background: var(--color-bg-card); /* 纯色背景，更稳定 */
-  border: 1px solid var(--color-border);
-  padding: 0.75rem 1.25rem;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  display: flex;
-  gap: 2.5rem;
-  align-items: center;
-  max-width: 90vw;
-}
-
-[data-theme='dark'] .actionContent {
-  background: #1e293b;
+  background: rgba(128, 128, 128, 0.15);
 }
 
 .selectionInfo {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .countText {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-dim);
+  opacity: 0.7;
 }
 
 .countNum {
@@ -600,27 +695,35 @@ input.searchInput {
   background: var(--color-error);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 99px;
   font-weight: 700;
   font-size: 0.8125rem;
   cursor: pointer;
+  box-shadow: 0 4px 12px var(--color-error-bg);
+  transition: all 0.2s;
+}
+
+.actionDelete:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
 }
 
 .actionCancel {
-  background: var(--color-bg-alt);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  background: rgba(128, 128, 128, 0.1);
+  color: inherit;
+  border: 1px solid transparent;
+  padding: 0.5rem 1.25rem;
+  border-radius: 99px;
   font-weight: 700;
   font-size: 0.8125rem;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+.actionCancel:hover {
+  background: rgba(128, 128, 128, 0.2);
+}
 
 @media (max-width: 768px) {
   .premiumGrid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
@@ -628,7 +731,9 @@ input.searchInput {
   .pTitle { font-size: 0.875rem; }
   .floatingActionBar { width: calc(100% - 2rem); min-width: 0; }
   .actionContent { gap: 1rem; padding: 0.75rem; }
-}@keyframes pageIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pageIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

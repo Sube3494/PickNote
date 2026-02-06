@@ -13,27 +13,36 @@
   pointer-events: auto;
   min-width: 300px;
   max-width: 420px;
-  padding: 0.875rem 1.25rem;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-premium);
+  padding: 1rem 1.25rem;
+  /* Minpic: standard glass-strong effect */
+  background: var(--glass-surface-opaque);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border-highlight);
+  border-radius: 18px; /* Slightly more rounded */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  animation: slideIn var(--duration-normal) var(--ease-spring), fadeOut 0.3s ease forwards 4.7s;
+  gap: 0.875rem;
+  /* Minpic: entry animation zoom-in + fade-in-up */
+  animation: 
+    zoom-in var(--duration-normal) var(--ease-out-quart) forwards,
+    fade-in-up var(--duration-normal) var(--ease-out-quart) forwards,
+    fadeOut 0.3s ease forwards 4.7s;
   overflow: hidden;
   position: relative;
 }
 
-/* Accent line on left */
+/* Base accent line on left */
 .toast::before {
   content: '';
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
+  width: 5px;
+  opacity: 0.8;
 }
 
 .icon {
@@ -42,52 +51,50 @@
   align-items: center;
   justify-content: center;
   margin-top: 0.125rem;
+  padding: 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .message {
-  font-size: var(--text-sm);
-  font-weight: 500;
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--color-text);
   line-height: 1.5;
 }
 
-/* Types */
+/* Status variants with glow effects from minpic */
 .success::before {
   background: var(--color-success);
+  box-shadow: 0 0 10px var(--color-success);
 }
 .success .icon {
   color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success), transparent 90%);
 }
 
 .error::before {
   background: var(--color-error);
+  box-shadow: 0 0 10px var(--color-error);
 }
 .error .icon {
   color: var(--color-error);
+  background: color-mix(in srgb, var(--color-error), transparent 90%);
 }
 
 .info::before {
   background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
 }
 .info .icon {
   color: var(--color-primary);
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  background: color-mix(in srgb, var(--color-primary), transparent 90%);
 }
 
 @keyframes fadeOut {
   to {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-10px) scale(0.95);
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/components/ThemeContext';
+import Skeleton from '@/components/Skeleton';
 import styles from './page.module.css';
 
 
@@ -98,27 +99,27 @@ export default function SettingsPage() {
           </div>
 
           <div className={styles.statsGrid}>
-            <div className={styles.statItem}>
-              <div className={styles.statHeader}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                <span className={styles.statLabel}>已登记货品</span>
+              <div className={styles.statItem}>
+                <div className={styles.statHeader}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                  <span className={styles.statLabel}>已登记货品</span>
+                </div>
+                <span className={styles.statValue}>{loading ? <Skeleton width={60} height={32} borderRadius={12} /> : stats?.productCount}</span>
               </div>
-              <span className={styles.statValue}>{loading ? '...' : stats?.productCount}</span>
-            </div>
-            <div className={styles.statItem}>
-              <div className={styles.statHeader}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                <span className={styles.statLabel}>供应商伙伴</span>
+              <div className={styles.statItem}>
+                <div className={styles.statHeader}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  <span className={styles.statLabel}>供应商伙伴</span>
+                </div>
+                <span className={styles.statValue}>{loading ? <Skeleton width={60} height={32} borderRadius={12} /> : stats?.supplierCount}</span>
               </div>
-              <span className={styles.statValue}>{loading ? '...' : stats?.supplierCount}</span>
-            </div>
-            <div className={styles.statItem}>
-              <div className={styles.statHeader}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                <span className={styles.statLabel}>累计进货单</span>
+              <div className={styles.statItem}>
+                <div className={styles.statHeader}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  <span className={styles.statLabel}>累计进货单</span>
+                </div>
+                <span className={styles.statValue}>{loading ? <Skeleton width={60} height={32} borderRadius={12} /> : stats?.purchaseCount}</span>
               </div>
-              <span className={styles.statValue}>{loading ? '...' : stats?.purchaseCount}</span>
-            </div>
           </div>
         </section>
 

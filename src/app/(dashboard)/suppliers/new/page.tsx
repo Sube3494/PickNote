@@ -36,8 +36,8 @@ export default function NewSupplierPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleTypeChange = (val: string) => {
-    setFormData(prev => ({ ...prev, type: val }));
+  const handleTypeChange = (val: string | number) => {
+    setFormData(prev => ({ ...prev, type: String(val) }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

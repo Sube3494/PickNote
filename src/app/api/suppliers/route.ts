@@ -23,7 +23,6 @@ export async function POST(req: NextRequest) {
     }
 
     const supplier = await prisma.supplier.create({
-      // @ts-expect-error - contactName exists in schema but type generation is flaky
       data: {
         name,
         contactName,

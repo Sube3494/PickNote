@@ -1,0 +1,52 @@
+.skeleton {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md, 12px);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Dark mode adjustment */
+[data-theme='dark'] .skeleton {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme='dark'] .skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0,
+    rgba(255, 255, 255, 0.02) 20%,
+    rgba(255, 255, 255, 0.05) 60%,
+    transparent
+  );
+}
+
+/* Glass Variant */
+.glass {
+  background: var(--glass-surface, rgba(255, 255, 255, 0.7));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  backdrop-filter: blur(4px);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

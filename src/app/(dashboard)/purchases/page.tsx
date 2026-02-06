@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { CustomSelect } from '@/components/CustomSelect';
+import Skeleton from '@/components/Skeleton';
 import styles from './page.module.css';
 
 interface Purchase {
@@ -133,9 +134,28 @@ export default function PurchasesPage() {
 
         <div className={styles.tableContainer}>
           {loading ? (
-            <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--color-text-dim)' }}>
-              <div style={{ marginBottom: '1rem', fontWeight: 600 }}>同步业务引擎中...</div>
-            </div>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                   {['业务单号', '供应/采选来源', '明细规模', '业务发生日期', '结算总额 (含运)', '状态', '操作'].map(h => (
+                     <th key={h}>{h}</th>
+                   ))}
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i}>
+                    <td><Skeleton width={100} height={20} /></td>
+                    <td><Skeleton width={120} height={20} /></td>
+                    <td><Skeleton width={80} height={20} /></td>
+                    <td><Skeleton width={100} height={20} /></td>
+                    <td><Skeleton width={90} height={20} /></td>
+                    <td><Skeleton width={80} height={24} borderRadius={20} /></td>
+                    <td><Skeleton width={70} height={28} borderRadius={8} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           ) : purchases.length === 0 ? (
             <div style={{ padding: '5rem', textAlign: 'center', color: 'var(--color-text-dim)' }}>
               <p style={{ fontWeight: 600 }}>暂无匹配的进货记录</p>
